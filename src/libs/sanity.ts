@@ -6,7 +6,6 @@ const sanityClient = createClient({
     useCdn: process.env.NODE_ENV === "production",
     token: process.env.SANITY_STUDIO_TOKEN,
     apiVersion: "2025-07-01",
-
 });
 
 export default sanityClient;
