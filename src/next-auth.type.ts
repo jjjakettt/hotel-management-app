@@ -7,4 +7,4 @@ declare module "next-auth"{
         }
 
     }
-}
+}   

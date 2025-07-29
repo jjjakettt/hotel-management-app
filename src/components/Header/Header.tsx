@@ -45,6 +45,8 @@ const Header = () => {
                                             alt={session.user.name!}
                                             width = {40}
                                             height = {40}
+                                            // Hover Animation -> app/(web)/global.css
+                                            className="scale-animation img"
                                         />
                                     </div>
                                 ):(

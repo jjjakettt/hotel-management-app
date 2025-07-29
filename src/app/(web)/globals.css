@@ -10,7 +10,6 @@
   --foreground: #ededed;
 }
 @theme {
-
   /* Brand colors */
   --color-primary: #038C7F;
   --color-secondary: #F2C641;
@@ -29,6 +28,14 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+/* Hover Animation */
+.img{
+  @apply object-cover w-full h-full;
+}
+.scale-animation {
+  @apply hover:scale-125 transition-all duration-700;
 }
 
 body {
