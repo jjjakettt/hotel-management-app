@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer"
 import ThemeProvider from "@/components/ThemeProvider/ThemeProvider";
+import { NextAuthProvider } from "@/components/AuthProvider/AuthProvider";
+import Toast from "@/components/Toast/Toast";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -25,16 +27,17 @@ export default function RootLayout({
   return (
     <html lang="en">
 
-      <body className={`${montserrat.className} antialiased`}>
-        <main className="font-normal">
+      <body suppressHydrationWarning className={`${montserrat.className} antialiased`}>
+        <NextAuthProvider>
           <ThemeProvider>
-            <Header />
-            {children}
-            <Footer /> 
+            <Toast />
+            <main className="font-normal">
+              <Header />
+              {children}
+              <Footer /> 
+            </main>
           </ThemeProvider>
-
-        </main>
-        
+        </NextAuthProvider>
       </body>
     </html>
   );
