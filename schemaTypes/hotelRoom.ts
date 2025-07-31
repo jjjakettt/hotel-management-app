@@ -2,9 +2,10 @@ import { defineField } from "sanity";
 
 // Hotel Room Type Options
 const roomTypes = [
-    {title: 'Basic', value: 'basic'},
-    {title: 'Luxury', value: 'luxury'},
+    {title: 'Deluxe', value: 'deluxe'},
+    {title: 'Premium', value: 'premium'},
     {title: 'Suite', value: 'suite'},
+    {title: 'Presidential', value: 'presidential'},
 ]
 
 const hotelRoom = {
@@ -14,7 +15,7 @@ const hotelRoom = {
     fields: [
         defineField({
             name: 'name',
-            title: 'name',
+            title: 'Name',
             type: 'string',
             validation: Rule => Rule.required().max(50).error("Maximum 50 Characters."),
         }),

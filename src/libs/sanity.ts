@@ -9,3 +9,7 @@ const sanityClient = createClient({
 });
 
 export default sanityClient;
+export function getFeaturedRoomQuery(getFeaturedRoomQuery: any, arg1: {}) {
+    throw new Error("Function not implemented.");
+}
+
