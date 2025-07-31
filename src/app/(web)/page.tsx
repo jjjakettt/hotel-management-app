@@ -8,6 +8,7 @@ import { getFeaturedRoom } from "@/libs/apis";
 const Home = async () => {
   const featuredRoom = await getFeaturedRoom();
   // console.log(featuredRoom);
+  // throw new Error("Unable to fetch") <- test error page
 
   return (
     <>
