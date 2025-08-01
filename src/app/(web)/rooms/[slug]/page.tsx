@@ -3,6 +3,7 @@
 import { getRoom } from "@/libs/apis";
 import useSWR from "swr";
 import LoadingSpinner from "../../loading";
+import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
 
 const RoomDetails = (props: { params: { slug: string } }) => {
 
@@ -20,10 +21,14 @@ const RoomDetails = (props: { params: { slug: string } }) => {
         throw new Error("Cannot fetch data");
 
     if (!room) return <LoadingSpinner/>;
-    console.log(room)
 
     return (
-        <div>Room Details</div>
+        <div>
+            <HotelPhotoGallery
+                photos = {room.images}
+            
+            />
+        </div>
     )
 }
 
