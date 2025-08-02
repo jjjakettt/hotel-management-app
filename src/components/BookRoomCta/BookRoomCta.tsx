@@ -6,29 +6,50 @@ import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 
 type Props = {
-    price: number;
-    discount: number;
-    specialNote: string;
-    checkinDate: Date | null;
     setCheckinDate: Dispatch<SetStateAction<Date | null>>;
-    checkoutDate: Date | null;
     setCheckoutDate: Dispatch<SetStateAction<Date | null>>;
     calcMinCheckoutDate: () => Date | null;
+    setAdults: Dispatch<SetStateAction<number>>;
+    setNoOfChildren: Dispatch<SetStateAction<number>>;
+    handleBookNowClick: () => void;
+    price: number;
+    discount: number;
+    isBooked: boolean;
+    specialNote: string;
+    checkinDate: Date | null;
+    checkoutDate: Date | null;
+    adults: number;
+    noOfChildren: number;
+    
 }
 const BookRoomCta: FC<Props> = props => {
 
     const { 
+        setCheckinDate,
+        setCheckoutDate,
+        calcMinCheckoutDate,
+        setAdults,
+        setNoOfChildren,
+        handleBookNowClick,
         price, 
         discount, 
         specialNote,
+        isBooked,
         checkinDate,
-        setCheckinDate,
         checkoutDate,
-        setCheckoutDate,
-        calcMinCheckoutDate,
+        adults,
+        noOfChildren,
+    
     } = props;
 
     const discountPrice = price - (price / 100) * discount;
+
+    const calcNoOfDays = () => {
+        if(!checkinDate || !checkoutDate) return 0;
+        const timeDiff = checkoutDate.getTime() - checkinDate.getTime();
+        const noOfDays = Math.ceil(timeDiff / (24 * 60 * 60 * 1000));
+        return noOfDays;
+    }
 
     
     return (
@@ -90,7 +111,7 @@ const BookRoomCta: FC<Props> = props => {
                         className='w-full border text-[var(--foreground-secondary)] border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary'
                     />
                 </div>
-{/* 
+            </div>
                 <div className='flex mt-4'>
                     <div className='w-1/2 pr-2'>
                     <label
@@ -126,8 +147,22 @@ const BookRoomCta: FC<Props> = props => {
                         className='w-full border border-gray-300 rounded-lg p-2.5'
                     />
                     </div>
-                </div> */}
-            </div>
+                </div>
+                {calcNoOfDays() > 0 ? (
+                    <p className="mt-3">
+                        Total Price: ${calcNoOfDays() * discountPrice}
+                    </p>
+                ) : (
+                    <></>
+                )}
+
+                <button
+                    disabled={isBooked}
+                    onClick={handleBookNowClick}
+                    className='btn-primary w-full mt-6 disabled:bg-gray-500 disabled:cursor-not-allowed'
+                >
+                    {isBooked ? 'Booked' : 'Book Now'}
+                </button>
         </div>
     );
 }

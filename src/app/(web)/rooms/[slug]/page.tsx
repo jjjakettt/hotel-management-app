@@ -11,6 +11,7 @@ import useSWR from "swr";
 import LoadingSpinner from "../../loading";
 import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
 import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
+import toast from "react-hot-toast";
 
 const RoomDetails = (props: { params: { slug: string } }) => {
 
@@ -20,6 +21,19 @@ const RoomDetails = (props: { params: { slug: string } }) => {
 
     const [ checkinDate, setCheckinDate ] = useState<Date | null>(null);
     const [ checkoutDate, setCheckoutDate ] = useState<Date | null>(null);
+    const [adults, setAdults] = useState(1);
+    const [noOfChildren, setNoOfChildren] = useState(0);
+
+    const fetchRoom = async () => getRoom(slug);
+
+    const {data: room, error, isLoading} = useSWR("/api/room", fetchRoom);
+
+    if (error) throw new Error('Cannot fetch data');
+    if (typeof room === 'undefined' && !isLoading)
+        throw new Error('Cannot fetch data');
+
+    if (!room) return <LoadingSpinner />;
+
     const calcMinCheckoutDate = () => {
         if (checkinDate) { 
             const nextDay = new Date(checkinDate);
@@ -29,10 +43,28 @@ const RoomDetails = (props: { params: { slug: string } }) => {
         return null;
     };
 
+    // Come back later
+    const handleBookNowClick = () => {
+        if(!checkinDate || !checkoutDate) 
+            return toast.error("Please provide checkin / checkout dates.");
 
-    const fetchRoom = async () => getRoom(slug);
+        if(checkinDate > checkoutDate)
+            return toast.error("Please choose a valid checkin period.");
 
-    const {data: room, error, isLoading} = useSWR("/api/room", fetchRoom);
+        const numberOfDays = calcNumDays();
+
+        const hotelRoomSlug = room.slug.current;
+        
+        // Integrate Stripe
+
+    };
+
+    const calcNumDays = () => {
+        if(!checkinDate || !checkoutDate) return;
+        const timeDiff = checkoutDate.getTime() - checkinDate.getTime();
+        const noOfDays = Math.ceil(timeDiff / (24 * 60 * 60 * 1000));
+        return noOfDays;
+    }
 
     if (error) 
         throw new Error("Cannot fetch data");
@@ -131,7 +163,12 @@ const RoomDetails = (props: { params: { slug: string } }) => {
                             checkoutDate={checkoutDate}
                             setCheckoutDate={setCheckoutDate}
                             calcMinCheckoutDate={calcMinCheckoutDate}
-                            
+                            adults={adults}
+                            noOfChildren={noOfChildren}
+                            setAdults={setAdults}
+                            setNoOfChildren={setNoOfChildren}
+                            isBooked={room.isBooked}
+                            handleBookNowClick={handleBookNowClick}
                         />
                     </div>
                 </div>
