@@ -73,7 +73,7 @@ const Auth = () => {
                 <span className="inline-flex items-center">
                     <FcGoogle 
                     onClick={loginHandler}
-                    className="text-4xl cursor-pointer text-black dark:text-white"/>
+                    className="text-4xl cursor-pointer text-[var(--foreground)]"/>
                 </span>
             </div>
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>

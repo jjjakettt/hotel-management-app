@@ -1,20 +1,34 @@
 'use client';
 
-import { getRoom } from "@/libs/apis";
-import useSWR from "swr";
-import LoadingSpinner from "../../loading";
-import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
-import { use } from "react";
+import { useState } from "react";
 import { MdOutlineCleaningServices } from "react-icons/md";
 import { LiaFireExtinguisherSolid } from "react-icons/lia";
 import { AiOutlineMedicineBox } from "react-icons/ai";
 import { GiSmokeBomb } from "react-icons/gi";
+
+import { getRoom } from "@/libs/apis";
+import useSWR from "swr";
+import LoadingSpinner from "../../loading";
+import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
+import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
 
 const RoomDetails = (props: { params: { slug: string } }) => {
 
     const {
         params: { slug },
     } = props;
+
+    const [ checkinDate, setCheckinDate ] = useState<Date | null>(null);
+    const [ checkoutDate, setCheckoutDate ] = useState<Date | null>(null);
+    const calcMinCheckoutDate = () => {
+        if (checkinDate) { 
+            const nextDay = new Date(checkinDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+            return nextDay;
+        }
+        return null;
+    };
+
 
     const fetchRoom = async () => getRoom(slug);
 
@@ -106,8 +120,19 @@ const RoomDetails = (props: { params: { slug: string } }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="md:col-span-4 rounded-xl shadow-lg dark:shadow dark:shadow-white sticky top-10 h-fit overflow-auto">
+                    <div className="md:col-span-4 rounded-xl shadow-[0_4px_6px_var(--shadow-color)] sticky top-10 h-fit overflow-auto">
                         {/* Book Room Call-to-action */}
+                        <BookRoomCta 
+                            discount={room.discount} 
+                            price={room.price} 
+                            specialNote={room.specialNote}
+                            checkinDate={checkinDate}
+                            setCheckinDate={setCheckinDate}
+                            checkoutDate={checkoutDate}
+                            setCheckoutDate={setCheckoutDate}
+                            calcMinCheckoutDate={calcMinCheckoutDate}
+                            
+                        />
                     </div>
                 </div>
             </div>
