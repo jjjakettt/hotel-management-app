@@ -48,12 +48,15 @@ const FeaturedRoom: FC<Props> = props => {
                   ${featuredRoom.price}
                 </p>
               </div>
-              <div className="flex gap-3 flex-col items-center justify-center mr-4">
-                <p className="text-xs lg:text-xl text-center">Discount</p>
-                <p className="md:font-bold flex font-medium text-lg xl:text-5xl">
-                  ${featuredRoom.discount}
-                </p>
-              </div>
+              {/* Discount only shows if there is one */}
+              {featuredRoom.discount > 0 && (
+                <div className="flex gap-3 flex-col items-center justify-center mr-4">
+                  <p className="text-xs lg:text-xl text-center">Discount</p>
+                  <p className="md:font-bold flex font-medium text-lg xl:text-5xl">
+                    {featuredRoom.discount}%
+                  </p>
+                </div>
+              )}
             </div>
             <Link
                 href={`/rooms/${featuredRoom.slug.current}`}
