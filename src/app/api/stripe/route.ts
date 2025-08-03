@@ -67,6 +67,8 @@ export async function POST(req: Request, res: Response){
                             name: room.name,
                             images: room.images.map(image => image.url),
                         },
+
+                        unit_amount: parseInt((totalPrice * 100).toString()),
                     },
                 },
             ],
@@ -75,7 +77,8 @@ export async function POST(req: Request, res: Response){
         }); 
 
         return NextResponse.json(stripeSession, {
-
+            status: 200,
+            statusText: "Payment session created",
         });
     } catch(error: any) {
         console.log("Payment failed", error);
