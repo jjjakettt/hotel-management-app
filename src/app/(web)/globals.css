@@ -6,8 +6,9 @@
   --background: #ffffff;
   --foreground: #171717;
   --foreground-secondary: #212529;
-
   --background-secondary: #eff0f2;
+  --background-tertiary: #f3f4f6;
+
   --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -17,6 +18,8 @@
   --foreground: #ededed;
   --background-secondary: #374151;
   --foreground-secondary: #cbd5e0;
+  --background-tertiary: #111827;
+
   --shadow-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -26,7 +29,6 @@
   --color-secondary: #F2C641;
   --color-tertiary-dark: #F27405;
   --color-tertiary-light: #F2C641;
-  /* --color-disabled: #9E9E9E; */
 
   /* Font Family */
   --font-family-montserrat: var(--font-montserrat); 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, use } from "react";
 import { MdOutlineCleaningServices } from "react-icons/md";
 import { LiaFireExtinguisherSolid } from "react-icons/lia";
 import { AiOutlineMedicineBox } from "react-icons/ai";
@@ -14,13 +14,13 @@ import LoadingSpinner from "../../loading";
 import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
 import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
 import { getStripe } from "@/libs/stripe";
+import RoomReview from "@/components/RoomReview/RoomReview";
 
 
-const RoomDetails = (props: { params: { slug: string } }) => {
+const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
 
-    const {
-        params: { slug },
-    } = props;
+    const params = use(props.params);
+    const slug = params.slug;
 
     const [ checkinDate, setCheckinDate ] = useState<Date | null>(null);
     const [ checkoutDate, setCheckoutDate ] = useState<Date | null>(null);
@@ -174,7 +174,8 @@ const RoomDetails = (props: { params: { slug: string } }) => {
                                 <p className='md:text-lg font-semibold'>Customer Reviews</p>
                                 </div>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                                    {/* <RoomReview roomId={room._id} /> */}
+                                    {/* Reviews */}
+                                    <RoomReview roomId={room._id} />
                                 </div>
                             </div>
                         </div>

@@ -159,7 +159,11 @@ const BookRoomCta: FC<Props> = props => {
                 <button
                     disabled={isBooked}
                     onClick={handleBookNowClick}
-                    className='btn-primary w-full mt-6 disabled:bg-gray-500 disabled:cursor-not-allowed'
+                    className={`w-full mt-6 px-6 md:px-[50px] lg:px-[72px] py-2 md:py-5 rounded-lg md:rounded-2xl font-bold text-base md:text-xl text-white transition-all duration-300 
+                        ${isBooked 
+                            ? 'bg-gray-500 cursor-not-allowed' 
+                            : 'bg-primary shadow-sm shadow-primary hover:scale-110'
+                        }`}
                 >
                     {isBooked ? 'Booked' : 'Book Now'}
                 </button>
