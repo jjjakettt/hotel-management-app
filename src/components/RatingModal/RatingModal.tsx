@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction } from 'react';
+import { Dispatch, FC, SetStateAction, useState } from 'react';
 import { BsStarFill } from 'react-icons/bs';
 
 type Props = {
@@ -25,6 +25,7 @@ const RatingModal: FC<Props> = props => {
     } = props;
 
     const starValues = [1, 2, 3, 4, 5];
+    const [hoveredStar, setHoveredStar] = useState<number | null>(null);
 
     return (
         <div
@@ -43,16 +44,24 @@ const RatingModal: FC<Props> = props => {
                 Rating
             </label>
             <div className='flex items-center'>
+                {/* Hovering Effect and Select Rating */}
                 {starValues.map(value => (
-                <button
-                    className={`w-6 h-6 ${
-                    ratingValue === value ? 'text-yellow-500' : 'text-gray-300'
-                    }`}
-                    onClick={() => setRatingValue(value)}
-                    key={value}
-                >
-                    <BsStarFill />
-                </button>
+                    <button
+                        className={`w-6 h-6 ${
+                            (hoveredStar !== null
+                                ? value <= hoveredStar
+                                : ratingValue !== null && value <= ratingValue)
+                                ? 'text-yellow-500'
+                                : 'text-gray-300'
+                        }`}
+                        onClick={() => setRatingValue(value)}
+                        onMouseEnter={() => setHoveredStar(value)}
+                        onMouseLeave={() => setHoveredStar(null)}
+                        key={value}
+                        type="button"
+                    >
+                        <BsStarFill />
+                    </button>
                 ))}
             </div>
             </div>
