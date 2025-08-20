@@ -8,7 +8,9 @@ export const heading1 = (
         <p className="mb-12 max-w-lg">
             Experience an Exquisite Hotel Immersed in Rich History and Timeless Elegance.
         </p>
-        <button className="btn-primary">Get Started</button>
+        <a href="/rooms" className="btn-primary">
+            Get Started
+        </a>
     </>
 );
 
