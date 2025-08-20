@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const heading1 = (
     <>
@@ -8,9 +9,9 @@ export const heading1 = (
         <p className="mb-12 max-w-lg">
             Experience an Exquisite Hotel Immersed in Rich History and Timeless Elegance.
         </p>
-        <a href="/rooms" className="btn-primary">
+        <Link href="/rooms" className="btn-primary">
             Get Started
-        </a>
+        </Link>
     </>
 );
 
@@ -27,7 +28,7 @@ export const section2 = (
                     className='img scale-animation'
                 />
             </div>
-            <div className="grid grid-cols-2 gap-8 h-48">
+            <div className="grid grid-cols-2 gap-8 h-48 pb-10">
                 <div className="rounded-2xl overflow-hidden">
                     <Image 
                         src='/images/hero-2.jpeg' 
