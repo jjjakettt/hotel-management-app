@@ -37,6 +37,7 @@
   --dark-mode: class;
 }
 
+
 /* Hover Animation */
 .img{
   @apply object-cover w-full h-full;

@@ -28,7 +28,7 @@ const Header = () => {
         <header className= "py-10 px-4 container mx-auto text-xl flex flex-wrap md:flex-nowrap items-center justify-between">
             <div className = "flex items-center w-full md:w-2/3">
                 <Link href="/" className="font-black text-tertiary-dark">
-                    Coconut Garden Villas
+                    Coconut Garden Villa
                 </Link>
                 
                 <ul className="flex items-center ml-5">
@@ -58,7 +58,6 @@ const Header = () => {
                                 <FaUserCircle className="cursor-pointer"/>
                             </Link>
                         )}
-
                     </li>
                     {/* Dark Mode Icon */}
                     <li className="ml-2">
@@ -77,9 +76,7 @@ const Header = () => {
                             )}
                     </li>
                 </ul>
-                
             </div> 
-
             {/* Primary navigation links with hover translate effect */}
             <ul className="flex items-center justify-between w-full md:w-1/3 mt-4">
                 <li className="hover:-translate-y-2 duration-500 transition-all">
@@ -89,7 +86,7 @@ const Header = () => {
                     <Link href="/rooms">Rooms</Link>
                 </li>
                 <li className="hover:-translate-y-2 duration-500 transition-all">
-                    <Link href="/">Contacts</Link>
+                    <Link href="/#footer">Contacts</Link>
                 </li>
 
             </ul>
@@ -97,5 +94,4 @@ const Header = () => {
         </header>
     )
 }
-
 export default Header 
