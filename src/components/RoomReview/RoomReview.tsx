@@ -26,7 +26,8 @@ const RoomReview: FC<{ roomId: string }> = ({ roomId }) => {
 
     return (
         <>
-        {roomReviews && roomReviews.map(review => 
+        {roomReviews && 
+            roomReviews.map(review => (
         <div 
             className="bg-[var(--background-tertiary)] p-4 rounded-lg"
             key={review._id}
@@ -46,7 +47,7 @@ const RoomReview: FC<{ roomId: string }> = ({ roomId }) => {
             </p>
 
         </div>
-        )}
+        ))}
         </>
     )
 }

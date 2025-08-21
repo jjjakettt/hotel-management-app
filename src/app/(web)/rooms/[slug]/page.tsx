@@ -15,12 +15,17 @@ import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery"
 import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
 import { getStripe } from "@/libs/stripe";
 import RoomReview from "@/components/RoomReview/RoomReview";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 
 const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
 
     const params = use(props.params);
     const slug = params.slug;
+
+    const { data: session, status } = useSession();
+    const router = useRouter();
 
     const [ checkinDate, setCheckinDate ] = useState<Date | null>(null);
     const [ checkoutDate, setCheckoutDate ] = useState<Date | null>(null);
@@ -47,6 +52,14 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
     };
 
     const handleBookNowClick = async () => {
+
+        // Checks if user is logged in before booking
+        if (status === 'loading') return; 
+        if (!session) {
+            router.push('/auth')
+            return toast.error("Please login before booking a room.");
+        }
+
         if(!checkinDate || !checkoutDate) 
             return toast.error("Please provide checkin / checkout dates.");
 
