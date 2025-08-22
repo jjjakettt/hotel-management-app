@@ -75,6 +75,8 @@ const Header = () => {
                             }}/>
                             )}
                     </li>
+                    {/* Localization: Vietnamese, English */}
+
                 </ul>
             </div> 
             {/* Primary navigation links with hover translate effect */}
