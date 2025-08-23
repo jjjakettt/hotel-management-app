@@ -59,7 +59,7 @@ export async function POST(req: Request, res: Response){
                 user,
             });
 
-            //   Update hotel Room
+            // Update hotel Room
             await updateHotelRoom(hotelRoom);
 
             return NextResponse.json('Booking successful', {
