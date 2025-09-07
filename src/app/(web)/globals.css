@@ -9,7 +9,7 @@
   --background-secondary: #eff0f2;
   --background-tertiary: #f3f4f6;
   --border: #D1D5DB;
-  --placeholder: #9CA3AF; /* match your app’s placeholder color */
+  --placeholder: #9CA3AF; 
 
   --shadow-color: rgba(0, 0, 0, 0.1);
 }
@@ -22,7 +22,7 @@
   --foreground-secondary: #cbd5e0;
   --background-tertiary: #111827;
   --border: #4B5563;
-  --placeholder: #9CA3AF; /* match your app’s placeholder color */
+  --placeholder: #9CA3AF;
 
   --shadow-color: rgba(255, 255, 255, 0.1);
 }

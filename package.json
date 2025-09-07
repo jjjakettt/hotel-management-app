@@ -12,7 +12,6 @@
     "@sanity/vision": "^3.98.1",
     "axios": "^1.11.0",
     "chart.js": "^4.5.0",
-    "cybersource-rest-client": "^0.0.70",
     "next": "15.3.4",
     "next-auth": "^4.24.11",
     "next-auth-sanity": "^1.5.3",
