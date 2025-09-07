@@ -6,18 +6,16 @@ import { LiaFireExtinguisherSolid } from "react-icons/lia";
 import { AiOutlineMedicineBox } from "react-icons/ai";
 import { GiSmokeBomb } from "react-icons/gi";
 import toast from "react-hot-toast";
-import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import useSWR from "swr";
 
 import { getRoom } from "@/libs/apis";
-import useSWR from "swr";
+import { createBooking } from "@/libs/apis";
 import LoadingSpinner from "../../loading";
 import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
 import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
-import { getStripe } from "@/libs/stripe";
 import RoomReview from "@/components/RoomReview/RoomReview";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-
 
 const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
 
@@ -51,12 +49,18 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
         return null;
     };
 
-    const handleBookNowClick = async () => {
+    const calcNumDays = () => {
+        if(!checkinDate || !checkoutDate) return 0;
+        const timeDiff = checkoutDate.getTime() - checkinDate.getTime();
+        const noOfDays = Math.ceil(timeDiff / (24 * 60 * 60 * 1000));
+        return noOfDays;
+    }
 
-        // Checks if user is logged in before booking
+    const handleBookNowClick = async () => {
+        // Check if user is logged in
         if (status === 'loading') return; 
         if (!session) {
-            router.push('/auth')
+            router.push('/auth');
             return toast.error("Please login before booking a room.");
         }
 
@@ -67,44 +71,42 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
             return toast.error("Please choose a valid checkin period.");
 
         const numberOfDays = calcNumDays();
+        const discountPrice = room.price - (room.price / 100) * room.discount;
+        const totalPrice = discountPrice * numberOfDays;
 
-        const hotelRoomSlug = room.slug.current;
-
-        const stripe = await getStripe()
-        
-        // Integrate Stripe
         try {
-            const { data: stripeSession } = await axios.post('/api/stripe', {
-                checkinDate, 
-                checkoutDate,
+            toast.loading('Creating your booking...');
+            
+            // Format dates for Sanity
+            const formattedCheckinDate = checkinDate.toISOString().split('T')[0];
+            const formattedCheckoutDate = checkoutDate.toISOString().split('T')[0];
+            
+            // Create booking directly in Sanity
+            await createBooking({
                 adults,
+                checkinDate: formattedCheckinDate,
+                checkoutDate: formattedCheckoutDate,
                 children: noOfChildren,
+                hotelRoom: room._id,
                 numberOfDays,
-                hotelRoomSlug
+                discount: room.discount,
+                totalPrice,
+                user: session.user.id
             });
 
-            if (stripe) {
-                const result = await stripe.redirectToCheckout({
-                    sessionId: stripeSession.id,
-                });
-
-                if (result.error) {
-                    toast.error("Payment Failed");
-                }
-            }
+            toast.dismiss();
+            toast.success('Booking confirmed! Payment will be collected at reception.');
+            
+            // Redirect to user bookings page
+            router.push(`/users/${session.user.id}`);
         } catch (error) {
-            console.log("Error: ", error);
-            toast.error("An error occured");
+            toast.dismiss();
+            console.error('Failed to create booking:', error);
+            toast.error('Failed to create booking. Please try again.');
         }
-
     };
 
-    const calcNumDays = () => {
-        if(!checkinDate || !checkoutDate) return;
-        const timeDiff = checkoutDate.getTime() - checkinDate.getTime();
-        const noOfDays = Math.ceil(timeDiff / (24 * 60 * 60 * 1000));
-        return noOfDays;
-    }
+
 
     if (error) 
         throw new Error("Cannot fetch data");

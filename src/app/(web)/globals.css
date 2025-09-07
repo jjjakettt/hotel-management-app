@@ -8,6 +8,8 @@
   --foreground-secondary: #212529;
   --background-secondary: #eff0f2;
   --background-tertiary: #f3f4f6;
+  --border: #D1D5DB;
+  --placeholder: #9CA3AF; 
 
   --shadow-color: rgba(0, 0, 0, 0.1);
 }
@@ -19,13 +21,16 @@
   --background-secondary: #374151;
   --foreground-secondary: #cbd5e0;
   --background-tertiary: #111827;
+  --border: #4B5563;
+  --placeholder: #9CA3AF;
 
   --shadow-color: rgba(255, 255, 255, 0.1);
 }
 
 @theme {
   /* Brand colors */
-  --color-primary: #038C7F;
+  --color-primary: #038C7F; /* Primary Button color */
+  --color-primary-hover: #025a59;
   --color-secondary: #F2C641;
   --color-tertiary-dark: #F27405;
   --color-tertiary-light: #F2C641;
