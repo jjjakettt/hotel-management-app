@@ -59,6 +59,7 @@ export const getUserBookingsQuery = groq`*[_type == 'booking' && user._ref == $u
     numberOfDays,
     adults,
     children,
+    quantity,
     totalPrice,
     discount
 }`;
