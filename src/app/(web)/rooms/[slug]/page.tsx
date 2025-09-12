@@ -10,12 +10,13 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 
-import { getBookedDates, getRoom } from "@/libs/apis";
+import { getAvailability, getBookedDatesForRoom, getRoom } from "@/libs/apis";
 import { createBooking } from "@/libs/apis";
 import LoadingSpinner from "../../loading";
 import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
 import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
 import RoomReview from "@/components/RoomReview/RoomReview";
+
 
 const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
 
@@ -29,38 +30,39 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
     const [ checkoutDate, setCheckoutDate ] = useState<Date | null>(null);
     const [adults, setAdults] = useState(1);
     const [noOfChildren, setNoOfChildren] = useState(0);
-    const [bookedDates, setBookedDates] = useState<string[]>([]);
 
     const fetchRoom = async () => getRoom(slug);
 
     const {data: room, error, isLoading} = useSWR("/api/room", fetchRoom);
+    const [selectedQuantity, setSelectedQuantity] = useState(1);
+
+
+
+    // For booked dates
+    const { data: bookedDates = [] } = useSWR(
+        room?._id ? `/api/booked-dates-${room._id}` : null,
+        room?._id ? () => getBookedDatesForRoom(room._id) : null
+    );
+
+    // For availability
+    const availabilityKey = room?._id && checkinDate && checkoutDate 
+        ? `/api/availability-${room._id}-${checkinDate.toISOString().split('T')[0]}-${checkoutDate.toISOString().split('T')[0]}`
+        : null;
+
+    const { data: availabilityInfo } = useSWR(
+        availabilityKey,
+        availabilityKey && room?._id ? () => getAvailability(
+            room._id, 
+            checkinDate!.toISOString().split('T')[0], 
+            checkoutDate!.toISOString().split('T')[0]
+        ) : null
+    );
 
     useEffect(() => {
-        if (room?._id) {
-            const fetchBookedDates = async () => {
-                try {
-                    const dates = await getBookedDates(room._id);
-                    const disabledDates: string[] = [];
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0); // Start of today
-                    
-                    dates.forEach((booking: any) => {
-                        const start = new Date(booking.checkinDate);
-                        const end = new Date(booking.checkoutDate);
-                        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-                            if (d >= today) {
-                                disabledDates.push(d.toISOString().split('T')[0]);
-                            }
-                        }
-                    });
-                    setBookedDates(disabledDates);
-                } catch (error) {
-                    console.error('Failed to fetch booked dates:', error);
-                }
-            };
-            fetchBookedDates();
+        if (availabilityInfo && selectedQuantity > availabilityInfo.availableQuantity) {
+            setSelectedQuantity(Math.min(1, availabilityInfo.availableQuantity));
         }
-    }, [room?._id]);
+    }, [availabilityInfo, selectedQuantity]);
 
     if (error) throw new Error('Cannot fetch data');
     if (typeof room === 'undefined' && !isLoading)
@@ -84,6 +86,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
         return noOfDays;
     }
 
+
     const handleBookNowClick = async () => {
         // Check if user is logged in
         if (status === 'loading') return; 
@@ -100,7 +103,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
 
         const numberOfDays = calcNumDays();
         const discountPrice = room.price - (room.price / 100) * room.discount;
-        const totalPrice = discountPrice * numberOfDays;
+        const totalPrice = discountPrice * numberOfDays * selectedQuantity;
 
         try {
             toast.loading('Creating your booking...');
@@ -118,9 +121,11 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                 hotelRoom: room._id,
                 numberOfDays,
                 discount: room.discount,
+                quantity: selectedQuantity, 
                 totalPrice,
                 user: session.user.id
             });
+            
 
             toast.dismiss();
             toast.success('Booking confirmed! Payment will be collected at reception.');
@@ -241,6 +246,9 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                             isBooked={room.isBooked}
                             handleBookNowClick={handleBookNowClick}
                             bookedDates={bookedDates}
+                            selectedQuantity={selectedQuantity}
+                            setSelectedQuantity={setSelectedQuantity}
+                            availabilityInfo={availabilityInfo}
                         />
                     </div>
                 </div>

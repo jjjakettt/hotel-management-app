@@ -10,7 +10,7 @@ type Props = {
 
 const RoomCard: FC<Props> = props => {
     const{
-        room: { coverImage, name, price, type, description, slug, isBooked },
+        room: { coverImage, name, price, type, description, slug, quantity },
     } = props;
 
     return (
@@ -30,9 +30,10 @@ const RoomCard: FC<Props> = props => {
                     <p>{name}</p>
                     <p>${price}</p>
                 </div>
-                <p className="pt-2 text-xs">
+                {/* <p className="pt-2 text-xs">
                     {type} Room
-                </p>
+                </p> */}
+                <p className="text-primary font-medium">{quantity} available</p>
                 <p className="pt-3 pb-6">
                     {description.slice(1,100)}...
                 </p>

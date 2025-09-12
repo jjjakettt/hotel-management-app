@@ -41,6 +41,7 @@ export const createBooking = async ({
     discount,
     hotelRoom,
     numberOfDays,
+    quantity,
     totalPrice,
     user,
 }: CreateBookingDto) => {
@@ -53,6 +54,7 @@ export const createBooking = async ({
         discount,
         hotelRoom,
         numberOfDays,
+        quantity,
         totalPrice,
         user,
     });
@@ -188,4 +190,16 @@ export async function getAvailableRooms(checkinDate?: string, checkoutDate?: str
 export async function getBookedDates(roomId: string) {
     const { data } = await axios.get(`/api/rooms/${roomId}/booked-dates`);
     return data;
-}
+};
+
+export async function getAvailability(roomId: string, checkinDate: string, checkoutDate: string) {
+    const { data } = await axios.get(`/api/rooms/${roomId}/availability`, {
+        params: { checkinDate, checkoutDate }
+    });
+    return data;
+};
+
+export async function getBookedDatesForRoom(roomId: string) {
+    const { data } = await axios.get(`/api/rooms/${roomId}/booked-dates`);
+    return data;
+};

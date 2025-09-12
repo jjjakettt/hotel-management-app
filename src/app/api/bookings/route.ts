@@ -31,22 +31,36 @@ export async function POST(req: Request) {
             discount,
             hotelRoom,
             numberOfDays,
+            quantity,
             totalPrice,
             user,
         } = body;
 
-        // // Basic validation
-        // if (
-        //     !adults || !checkinDate || !checkoutDate || !hotelRoom ||
-        //     !numberOfDays || totalPrice == null || !user
-        // ) {
-        //     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
-        // }
+
+        console.log('Individual field check:', {
+            adults: !!adults,
+            checkinDate: !!checkinDate,
+            checkoutDate: !!checkoutDate,
+            children: children != null,
+            discount: discount != null,
+            hotelRoom: !!hotelRoom,
+            numberOfDays: !!numberOfDays,
+            quantity: !!quantity,
+            totalPrice: totalPrice != null,
+            user: !!user,
+        });
+
+        console.log('Actual values:', {
+            adults, checkinDate, checkoutDate, children,
+            discount, hotelRoom, numberOfDays, quantity, totalPrice, user
+        });
         // Basic validation
         if (
             !adults || !checkinDate || !checkoutDate || !hotelRoom ||
-            !numberOfDays || totalPrice == null || !user
+            !numberOfDays || totalPrice == null || !user || !quantity ||
+            children == null || discount == null
         ) {
+            console.log('Validation failed - missing fields');
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
@@ -56,29 +70,29 @@ export async function POST(req: Request) {
         if (checkin >= checkout) {
             return NextResponse.json({ error: 'Invalid date range' }, { status: 400 });
         }
-        // const today = new Date();
-        // today.setHours(0, 0, 0, 0); // Set to start of day
-        // if (checkin < today) {
-        //     return NextResponse.json({ error: 'Cannot book dates in the past' }, { status: 400 });
-        // }
 
-        // Checks for any overlapping bookings before allowing a new booking to be created
-        const existingBookings = await writeClient.fetch(
-            `*[_type == "booking" && hotelRoom._ref == $roomId && (
-                (checkinDate <= $checkin && checkoutDate > $checkin) ||
-                (checkinDate < $checkout && checkoutDate >= $checkout) ||
-                (checkinDate >= $checkin && checkoutDate <= $checkout)
-            )]`,
-            { roomId: hotelRoom, checkin: checkinDate, checkout: checkoutDate }
-        );
+        // Overlapping Bookings Check
+        const [room, existingBookings] = await Promise.all([
+            writeClient.fetch(
+                `*[_type == "hotelRoom" && _id == $roomId][0]{ quantity }`,
+                { roomId: hotelRoom }
+            ),
+            writeClient.fetch(
+                `*[_type == "booking" && hotelRoom._ref == $roomId && (
+                    (checkinDate <= $checkin && checkoutDate > $checkin) ||
+                    (checkinDate < $checkout && checkoutDate >= $checkout) ||
+                    (checkinDate >= $checkin && checkoutDate <= $checkout)
+                )]{ quantity }`,
+                { roomId: hotelRoom, checkin: checkinDate, checkout: checkoutDate }
+            )
+        ]);
 
-        
+        const totalBookedQuantity = existingBookings.reduce((sum: number, booking: any) => sum + (booking.quantity || 0), 0);
 
-        if (existingBookings.length > 0) {
-            return NextResponse.json({ error: 'Room not available for selected dates' }, { status: 409 });
+        if (totalBookedQuantity + quantity > room.quantity) {
+            return NextResponse.json({ error: 'Not enough rooms available for selected dates' }, { status: 409 });
         }
 
-        // Create booking + mark room as booked (transaction)
         const tx = writeClient.transaction();
 
         const bookingDoc = {
@@ -90,12 +104,15 @@ export async function POST(req: Request) {
             numberOfDays,
             adults,
             children,
+            quantity,
             totalPrice,
             discount,
         };
-
+        console.log('Received booking data:', {
+            adults, checkinDate, checkoutDate, children, 
+            discount, hotelRoom, numberOfDays, quantity, totalPrice, user
+        }); 
         tx.create(bookingDoc);
-        // tx.patch(hotelRoom, (p) => p.set({ isBooked: true }));
 
         const result = await tx.commit();
 

@@ -103,6 +103,14 @@ const hotelRoom = {
             initialValue: 1,
         }),
         defineField({
+            name: 'quantity',
+            title: 'Quantity Available',
+            type: 'number',
+            validation: Rule => Rule.required().min(1),
+            initialValue: 1,
+            description: 'Number of rooms available of this type',
+        }),
+        defineField({
             name: 'offeredAmenities',
             title: 'Offered Amenities',
             type: 'array',

@@ -57,6 +57,13 @@ const FeaturedRoom: FC<Props> = props => {
                   </p>
                 </div>
               )}
+
+              <div className="flex gap-3 flex-col items-center justify-center mr-4">
+                  <p className="text-xs lg:text-xl text-center">Available</p>
+                  <p className="md:font-bold flex font-medium text-lg xl:text-5xl">
+                      {featuredRoom.quantity}
+                  </p>
+              </div>
             </div>
             <Link
                 href={`/rooms/${featuredRoom.slug.current}`}
