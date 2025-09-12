@@ -20,7 +20,7 @@ type Props = {
     checkoutDate: Date | null;
     adults: number;
     noOfChildren: number;
-    
+    bookedDates?: string[];
 }
 const BookRoomCta: FC<Props> = props => {
 
@@ -34,11 +34,11 @@ const BookRoomCta: FC<Props> = props => {
         price, 
         discount, 
         specialNote,
-        isBooked,
         checkinDate,
         checkoutDate,
         adults,
         noOfChildren,
+        bookedDates,
     
     } = props;
 
@@ -50,6 +50,11 @@ const BookRoomCta: FC<Props> = props => {
         const noOfDays = Math.ceil(timeDiff / (24 * 60 * 60 * 1000));
         return noOfDays;
     }
+    const isDateDisabled = (date: Date) => {
+        const dateStr = date.toISOString().split('T')[0];
+        return bookedDates?.includes(dateStr) || false;
+    };
+
 
     
     return (
@@ -89,8 +94,9 @@ const BookRoomCta: FC<Props> = props => {
                         onChange={date => setCheckinDate(date)}
                         dateFormat='dd/MM/yyyy'
                         minDate={new Date()}
+                        excludeDates={bookedDates?.map(d => new Date(d)) || []}
                         id='check-in-date'
-                        className='w-full border text-[var(--foreground-secondary)] border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary'
+                        className='w-full border text-[var(--foreground-secondary)] border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary react-datepicker-exclude-booked'
                     />
                 </div>
                 {/* Checkout Date */}
@@ -107,8 +113,9 @@ const BookRoomCta: FC<Props> = props => {
                         dateFormat='dd/MM/yyyy'
                         disabled={!checkinDate}
                         minDate={calcMinCheckoutDate() ?? undefined}
+                        excludeDates={bookedDates?.map(d => new Date(d)) || []}
                         id='check-out-date'
-                        className='w-full border text-[var(--foreground-secondary)] border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary'
+                        className='w-full border text-[var(--foreground-secondary)] border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary react-datepicker-exclude-booked'
                     />
                 </div>
             </div>
@@ -149,23 +156,28 @@ const BookRoomCta: FC<Props> = props => {
                     </div>
                 </div>
                 {calcNoOfDays() > 0 ? (
-                    <p className="mt-3">
-                        Total Price: ${calcNoOfDays() * discountPrice}
-                    </p>
+                    <div>
+                        <p className="mt-3">
+                            Total Price: ${calcNoOfDays() * discountPrice}
+                        </p>
+                    </div>
+                    
                 ) : (
                     <></>
                 )}
 
                 <button
-                    disabled={isBooked}
+                    disabled={false}
                     onClick={handleBookNowClick}
                     className={`w-full mt-6 px-6 md:px-[50px] lg:px-[72px] py-2 md:py-5 rounded-lg md:rounded-2xl font-bold text-base md:text-xl text-white transition-all duration-300 
-                        ${isBooked 
+                        ${false
                             ? 'bg-gray-500 cursor-not-allowed' 
                             : 'bg-primary shadow-sm shadow-primary hover:scale-110'
-                        }`}
+                        }`
+                    }
                 >
-                    {isBooked ? 'Booked' : 'Book Now'}
+                    {/* {isBooked ? 'Booked' : 'Book Now'} */}
+                    {'Book Now'}
                 </button>
         </div>
     );

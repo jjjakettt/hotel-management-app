@@ -170,4 +170,22 @@ export async function getRoomReviews(roomId: string){
     );
 
     return result;
+};
+
+export async function getAvailableRooms(checkinDate?: string, checkoutDate?: string) {
+    if (!checkinDate || !checkoutDate) {
+        return getRooms(); // Return all rooms if no dates specified
+    }
+    
+    const result = await sanityClient.fetch<Room[]>(
+        queries.getAvailableRoomsQuery,
+        { checkinDate, checkoutDate },
+        { cache: 'no-cache' }
+    );
+    return result;
+};
+
+export async function getBookedDates(roomId: string) {
+    const { data } = await axios.get(`/api/rooms/${roomId}/booked-dates`);
+    return data;
 }
