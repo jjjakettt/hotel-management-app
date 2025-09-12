@@ -184,3 +184,8 @@ export async function getAvailableRooms(checkinDate?: string, checkoutDate?: str
     );
     return result;
 };
+
+export async function getBookedDates(roomId: string) {
+    const { data } = await axios.get(`/api/rooms/${roomId}/booked-dates`);
+    return data;
+}

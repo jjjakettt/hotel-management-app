@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
 import { MdOutlineCleaningServices } from "react-icons/md";
 import { LiaFireExtinguisherSolid } from "react-icons/lia";
 import { AiOutlineMedicineBox } from "react-icons/ai";
@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 
-import { getRoom } from "@/libs/apis";
+import { getBookedDates, getRoom } from "@/libs/apis";
 import { createBooking } from "@/libs/apis";
 import LoadingSpinner from "../../loading";
 import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
@@ -29,10 +29,38 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
     const [ checkoutDate, setCheckoutDate ] = useState<Date | null>(null);
     const [adults, setAdults] = useState(1);
     const [noOfChildren, setNoOfChildren] = useState(0);
+    const [bookedDates, setBookedDates] = useState<string[]>([]);
 
     const fetchRoom = async () => getRoom(slug);
 
     const {data: room, error, isLoading} = useSWR("/api/room", fetchRoom);
+
+    useEffect(() => {
+        if (room?._id) {
+            const fetchBookedDates = async () => {
+                try {
+                    const dates = await getBookedDates(room._id);
+                    const disabledDates: string[] = [];
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Start of today
+                    
+                    dates.forEach((booking: any) => {
+                        const start = new Date(booking.checkinDate);
+                        const end = new Date(booking.checkoutDate);
+                        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                            if (d >= today) {
+                                disabledDates.push(d.toISOString().split('T')[0]);
+                            }
+                        }
+                    });
+                    setBookedDates(disabledDates);
+                } catch (error) {
+                    console.error('Failed to fetch booked dates:', error);
+                }
+            };
+            fetchBookedDates();
+        }
+    }, [room?._id]);
 
     if (error) throw new Error('Cannot fetch data');
     if (typeof room === 'undefined' && !isLoading)
@@ -212,6 +240,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                             setNoOfChildren={setNoOfChildren}
                             isBooked={room.isBooked}
                             handleBookNowClick={handleBookNowClick}
+                            bookedDates={bookedDates}
                         />
                     </div>
                 </div>
