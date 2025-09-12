@@ -36,24 +36,6 @@ export async function POST(req: Request) {
             user,
         } = body;
 
-
-        console.log('Individual field check:', {
-            adults: !!adults,
-            checkinDate: !!checkinDate,
-            checkoutDate: !!checkoutDate,
-            children: children != null,
-            discount: discount != null,
-            hotelRoom: !!hotelRoom,
-            numberOfDays: !!numberOfDays,
-            quantity: !!quantity,
-            totalPrice: totalPrice != null,
-            user: !!user,
-        });
-
-        console.log('Actual values:', {
-            adults, checkinDate, checkoutDate, children,
-            discount, hotelRoom, numberOfDays, quantity, totalPrice, user
-        });
         // Basic validation
         if (
             !adults || !checkinDate || !checkoutDate || !hotelRoom ||
@@ -108,10 +90,7 @@ export async function POST(req: Request) {
             totalPrice,
             discount,
         };
-        console.log('Received booking data:', {
-            adults, checkinDate, checkoutDate, children, 
-            discount, hotelRoom, numberOfDays, quantity, totalPrice, user
-        }); 
+
         tx.create(bookingDoc);
 
         const result = await tx.commit();

@@ -65,9 +65,6 @@ const BookRoomCta: FC<Props> = props => {
         return days * discountPrice * selectedQuantity;
     };  
 
-
-
-    
     return (
         <div className="px-7 py-6"> 
             <h3>
@@ -86,23 +83,8 @@ const BookRoomCta: FC<Props> = props => {
                 ''
                 )}
             </h3>
-
             <div className='w-full border-b-2 border-b-secondary my-2' />
-
             <h4 className='my-8'>{specialNote}</h4>
-
-            {/* Availability */}
-            {/* {availabilityInfo && checkinDate && checkoutDate && (
-                <div className='mb-4 p-3 bg-[var(--background-secondary)] rounded-lg'>
-                    <p className='text-sm font-medium'>
-                        {availabilityInfo.availableQuantity > 0 
-                            ? `${availabilityInfo.availableQuantity} of ${availabilityInfo.totalQuantity} rooms available`
-                            : 'No rooms available for selected dates'
-                        }
-                    </p>
-                </div>
-            )} */}
-
             <div className='flex'>
                 {/* Checkin Date */}
                 <div className='w-1/2 pr-2'>
@@ -176,23 +158,6 @@ const BookRoomCta: FC<Props> = props => {
                             max={3}
                             className='w-full border border-gray-300 rounded-lg p-2.5'
                         />
-                        {/* <div className='w-1/2 pl-2'>
-                            <label
-                                htmlFor='quantity'
-                                className='block text-sm font-medium text-[var(--foreground-secondary)]'
-                            >
-                                Rooms
-                            </label>
-                            <input
-                                type='number'
-                                id='quantity'
-                                value={selectedQuantity}
-                                onChange={e => setSelectedQuantity(+e.target.value)}
-                                min={1}
-                                max={availabilityInfo?.availableQuantity || 1}
-                                className='w-full border border-gray-300 rounded-lg p-2.5'
-                            />
-                        </div> */}
                     </div>
                 </div>
                 {availabilityInfo && checkinDate && checkoutDate && availabilityInfo.availableQuantity > 0 && (
@@ -260,18 +225,6 @@ const BookRoomCta: FC<Props> = props => {
                 >
                     {availabilityInfo?.availableQuantity === 0 ? 'Fully Booked' : 'Book Now'}
                 </button>
-                {/* <button
-                    disabled={false}
-                    onClick={handleBookNowClick}
-                    className={`w-full mt-6 px-6 md:px-[50px] lg:px-[72px] py-2 md:py-5 rounded-lg md:rounded-2xl font-bold text-base md:text-xl text-white transition-all duration-300 
-                        ${false
-                            ? 'bg-gray-500 cursor-not-allowed' 
-                            : 'bg-primary shadow-sm shadow-primary hover:scale-110'
-                        }`
-                    }
-                >
-                    {'Book Now'}
-                </button> */}
         </div>
     );
 }
