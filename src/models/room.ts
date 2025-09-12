@@ -31,6 +31,7 @@ export type Room = {
     isFeatured: boolean;
     name: string;
     numberOfBeds: number;
+    quantity: number;
     offeredAmenities: Amenity[];
     price: number;
     slug: Slug;
@@ -46,6 +47,7 @@ export type CreateBookingDto = {
     numberOfDays: number;
     adults: number;
     children: number;
+    quantity: number;
     totalPrice: number;
     discount: number;
 }

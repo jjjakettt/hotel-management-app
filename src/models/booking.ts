@@ -11,6 +11,7 @@ export type Booking = {
     numberOfDays: number;
     adults: number;
     children: number;
+    quantity: number; 
     totalPrice: number;
     discount: number;
 };
