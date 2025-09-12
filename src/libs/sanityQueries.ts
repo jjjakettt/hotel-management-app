@@ -79,3 +79,16 @@ export const getRoomReviewsQuery = groq`*[_type == 'review' && hotelRoom._ref ==
     },
     userRating
 }`
+
+export const getAvailableRoomsQuery = groq`*[_type == "hotelRoom" && !(_id in *[_type == "booking" && checkinDate <= $checkinDate && checkoutDate > $checkinDate].hotelRoom._ref)] {
+    _id,
+    coverImage,
+    description,
+    dimension,
+    isBooked,
+    isFeatured,
+    name,
+    price,
+    slug,
+    type
+}`;

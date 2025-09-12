@@ -149,23 +149,28 @@ const BookRoomCta: FC<Props> = props => {
                     </div>
                 </div>
                 {calcNoOfDays() > 0 ? (
-                    <p className="mt-3">
-                        Total Price: ${calcNoOfDays() * discountPrice}
-                    </p>
+                    <div>
+                        <p className="mt-3">
+                            Total Price: ${calcNoOfDays() * discountPrice}
+                        </p>
+                    </div>
+                    
                 ) : (
                     <></>
                 )}
 
                 <button
-                    disabled={isBooked}
+                    disabled={false}
                     onClick={handleBookNowClick}
                     className={`w-full mt-6 px-6 md:px-[50px] lg:px-[72px] py-2 md:py-5 rounded-lg md:rounded-2xl font-bold text-base md:text-xl text-white transition-all duration-300 
-                        ${isBooked 
+                        ${false
                             ? 'bg-gray-500 cursor-not-allowed' 
                             : 'bg-primary shadow-sm shadow-primary hover:scale-110'
-                        }`}
+                        }`
+                    }
                 >
-                    {isBooked ? 'Booked' : 'Book Now'}
+                    {/* {isBooked ? 'Booked' : 'Book Now'} */}
+                    {'Book Now'}
                 </button>
         </div>
     );

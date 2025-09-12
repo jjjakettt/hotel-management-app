@@ -35,12 +35,47 @@ export async function POST(req: Request) {
             user,
         } = body;
 
+        // // Basic validation
+        // if (
+        //     !adults || !checkinDate || !checkoutDate || !hotelRoom ||
+        //     !numberOfDays || totalPrice == null || !user
+        // ) {
+        //     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+        // }
         // Basic validation
         if (
             !adults || !checkinDate || !checkoutDate || !hotelRoom ||
             !numberOfDays || totalPrice == null || !user
         ) {
-            return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        }
+
+        // Validate dates
+        const checkin = new Date(checkinDate);
+        const checkout = new Date(checkoutDate);
+        if (checkin >= checkout) {
+            return NextResponse.json({ error: 'Invalid date range' }, { status: 400 });
+        }
+        // const today = new Date();
+        // today.setHours(0, 0, 0, 0); // Set to start of day
+        // if (checkin < today) {
+        //     return NextResponse.json({ error: 'Cannot book dates in the past' }, { status: 400 });
+        // }
+
+        // Checks for any overlapping bookings before allowing a new booking to be created
+        const existingBookings = await writeClient.fetch(
+            `*[_type == "booking" && hotelRoom._ref == $roomId && (
+                (checkinDate <= $checkin && checkoutDate > $checkin) ||
+                (checkinDate < $checkout && checkoutDate >= $checkout) ||
+                (checkinDate >= $checkin && checkoutDate <= $checkout)
+            )]`,
+            { roomId: hotelRoom, checkin: checkinDate, checkout: checkoutDate }
+        );
+
+        
+
+        if (existingBookings.length > 0) {
+            return NextResponse.json({ error: 'Room not available for selected dates' }, { status: 409 });
         }
 
         // Create booking + mark room as booked (transaction)
@@ -60,7 +95,7 @@ export async function POST(req: Request) {
         };
 
         tx.create(bookingDoc);
-        tx.patch(hotelRoom, (p) => p.set({ isBooked: true }));
+        // tx.patch(hotelRoom, (p) => p.set({ isBooked: true }));
 
         const result = await tx.commit();
 
