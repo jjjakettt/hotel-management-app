@@ -21,17 +21,22 @@ export async function GET(
             { roomId }
         );
 
-        // Count overlapping bookings
+        // Get overlapping bookings with their quantities
         const overlappingBookings = await sanityClient.fetch(
-            `count(*[_type == "booking" && hotelRoom._ref == $roomId && (
+            `*[_type == "booking" && hotelRoom._ref == $roomId && (
                 (checkinDate <= $checkin && checkoutDate > $checkin) ||
                 (checkinDate < $checkout && checkoutDate >= $checkout) ||
                 (checkinDate >= $checkin && checkoutDate <= $checkout)
-            )])`,
+            )]{ quantity }`,
             { roomId, checkin: checkinDate, checkout: checkoutDate }
         );
 
-        const availableQuantity = room.quantity - overlappingBookings;
+        // Sum up all booked quantities
+        const totalBookedQuantity = overlappingBookings.reduce((sum: number, booking: any) => 
+            sum + (booking.quantity || 0), 0
+        );
+
+        const availableQuantity = room.quantity - totalBookedQuantity;
 
         return NextResponse.json({ 
             availableQuantity: Math.max(0, availableQuantity),
