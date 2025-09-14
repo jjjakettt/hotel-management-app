@@ -9,8 +9,7 @@ export async function getFeaturedRoom() {
     const result = await sanityClient.fetch<Room>(
         queries.getFeaturedRoomQuery,
         {}, 
-        // { next: { revalidate: 1800 } } // 1800s -> 30 mins
-        { cache: 'no-cache' } // function gets called on every request -> dev mode (remove later)
+        // { cache: 'no-cache' } // function gets called on every request -> dev mode (remove later)
     );
 
     return result;
@@ -45,7 +44,6 @@ export const createBooking = async ({
     totalPrice,
     user,
 }: CreateBookingDto) => {
-    // Call our secure server route which performs the Sanity mutation
     const { data } = await axios.post('/api/bookings', {
         adults,
         checkinDate,
