@@ -36,7 +36,6 @@ export async function POST(req: Request, res: Response){
     try {
         // Check if review already exists
         const alreadyExists = await checkReviewExists(userId, roomId);
-        // console.log("alreadyExists: ", alreadyExists);
 
         let data;
         if (alreadyExists){
