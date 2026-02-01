@@ -44,6 +44,8 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
         room?._id ? () => getBookedDatesForRoom(room._id) : null
     );
 
+    console.log('Room page bookedDates:', bookedDates);
+
     // For availability
     const availabilityKey = room?._id && checkinDate && checkoutDate
         ? `/api/availability-${room._id}-${checkinDate.toISOString().split('T')[0]}-${checkoutDate.toISOString().split('T')[0]}`

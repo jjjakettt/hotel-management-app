@@ -96,13 +96,20 @@ const BookRoomCta: FC<Props> = props => {
                         {t("booking.checkin")}
                     </label>
                     <DatePicker
+                        key={`checkin-${bookedDates?.length || 0}`}
                         selected={checkinDate}
                         onChange={date => setCheckinDate(date)}
                         dateFormat='dd/MM/yyyy'
                         minDate={new Date()}
-                        excludeDates={bookedDates?.map(d => new Date(d)) || []}
+                        excludeDates={bookedDates?.map(d => {
+                            const [year, month, day] = d.split('-').map(Number);
+                            // Create date in Vietnam timezone
+                            const date = new Date(year, month - 1, day);
+                            return date;
+                        }) || []}
                         id='check-in-date'
-                        className='w-full border text-[var(--foreground-secondary)] border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary react-datepicker-exclude-booked'
+                        className='w-full border text-[var(--foreground-secondary)] border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary'
+                        placeholderText="Select check-in date"
                     />
                 </div>
                 {/* Checkout Date */}
@@ -119,25 +126,69 @@ const BookRoomCta: FC<Props> = props => {
                         dateFormat='dd/MM/yyyy'
                         disabled={!checkinDate}
                         minDate={calcMinCheckoutDate() ?? undefined}
-                        excludeDates={bookedDates?.map(d => new Date(d)) || []}
+                        excludeDates={bookedDates?.map(d => {
+                            const [year, month, day] = d.split('-').map(Number);
+                            // Create date in Vietnam timezone
+                            const date = new Date(year, month - 1, day);
+                            return date;
+                        }) || []}
                         id='check-out-date'
-                        className='w-full border text-[var(--foreground-secondary)] border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary react-datepicker-exclude-booked'
+                        className='w-full border text-[var(--foreground-secondary)] border-gray-300 rounded-lg p-2.5 focus:ring-primary focus:border-primary'
+                        placeholderText="Select check-out date"
                     />
                 </div>
             </div>
+            <div className='flex mt-4'>
+                <div className='w-1/2 pr-2'>
+                    <label
+                        htmlFor='adults'
+                        className='block text-sm font-medium text-[var(--foreground-secondary)]'
+                    >
+                        Adults
+                    </label>
+                    <input
+                        type='number'
+                        id='adults'
+                        value={adults}
+                        onChange={e => setAdults(+e.target.value)}
+                        min={1}
+                        max={5}
+                        className='w-full border border-gray-300 rounded-lg p-2.5'
+                    />
+                    </div>
+                    <div className='w-1/2 pl-2'>
+                    <label
+                        htmlFor='children'
+                        className='block text-sm font-medium text-[var(--foreground-secondary)]'
+                    >
+                        Children
+                    </label>
+                    <input
+                        type='number'
+                        id='children'
+                        value={noOfChildren}
+                        onChange={e => setNoOfChildren(+e.target.value)}
+                        min={0}
+                        max={3}
+                        className='w-full border border-gray-300 rounded-lg p-2.5'
+                    />
+                </div>
+            </div>
+            {/* Quantity Input */}
+            {availabilityInfo && checkinDate && checkoutDate && availabilityInfo.availableQuantity > 0 && (
                 <div className='flex mt-4'>
                     <div className='w-1/2 pr-2'>
                         <label
-                            htmlFor='adults'
-                            className='block text-sm font-medium text-[var(--foreground-secondary)]'
+                            htmlFor='quantity'
+                            className='block text-sm font-medium text-[var(--foreground-secondary)] mb-2'
                         >
                             {t("booking.adults")}
                         </label>
                         <input
                             type='number'
-                            id='adults'
-                            value={adults}
-                            onChange={e => setAdults(+e.target.value)}
+                            id='quantity'
+                            value={selectedQuantity}
+                            onChange={e => setSelectedQuantity(Math.max(1, Math.min(+e.target.value, availabilityInfo.availableQuantity)))}
                             min={1}
                             max={5}
                             className='w-full border border-gray-300 rounded-lg p-2.5'
@@ -191,7 +242,27 @@ const BookRoomCta: FC<Props> = props => {
                             </div>
                         </div>
                     </div>
-                )}
+                </div>
+            )}
+            {/* Show unavailable message when no rooms left */}
+            {availabilityInfo && checkinDate && checkoutDate && availabilityInfo.availableQuantity === 0 && (
+                <div className='mt-4 p-3 bg-red-100 rounded-lg'>
+                    <p className='text-sm font-medium text-red-700'>
+                        No rooms available for selected dates
+                    </p>
+                </div>
+            )}
+        
+            {calcNoOfDays() > 0 ? (
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <p className="font-semibold text-lg">
+                        Total Price: ${calcTotalPrice()}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                        {selectedQuantity} room{selectedQuantity > 1 ? 's' : ''} × {calcNoOfDays()} day{calcNoOfDays() > 1 ? 's' : ''} × ${discountPrice} each
+                    </p>
+                </div>
+            ) : <></>}
 
                 {/* Show unavailable message when no rooms left */}
                 {availabilityInfo && checkinDate && checkoutDate && availabilityInfo.availableQuantity === 0 && (
