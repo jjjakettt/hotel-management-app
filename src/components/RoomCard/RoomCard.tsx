@@ -12,7 +12,7 @@ type Props = {
 
 const RoomCard: FC<Props> = props => {
     const {
-        room: { coverImage, name, name_vi, price, description, description_vi, slug, quantity },
+        room: { coverImage, name, name_vi, price, price_vnd, description, description_vi, slug, quantity },
     } = props;
 
     const { t, language } = useTranslation();
@@ -34,7 +34,7 @@ const RoomCard: FC<Props> = props => {
             <div className="p-4 bg-white">
                 <div className="flex justify-between text-xl font-semibold">
                     <p>{displayName}</p>
-                    <p>${price}</p>
+                    <p>{(language === "vi" && price_vnd) ? `₫${price_vnd.toLocaleString()}` : `$${price}`}</p>
                 </div>
                 <p className="text-primary font-medium">{quantity} {t("room.available")}</p>
                 <p className="pt-3 pb-6">
