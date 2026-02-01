@@ -136,7 +136,7 @@ src/app/
 
 - **Server State**: SWR for caching and revalidation
 - **UI State**: React hooks (`useState`, `useCallback`, `useContext`)
-- **Global State**: Context API (ThemeContext for dark mode)
+- **Global State**: Context API (ThemeContext for dark mode, LanguageContext for EN/VI)
 - **Session State**: NextAuth session management
 
 #### 4. Authentication Flow
@@ -156,6 +156,30 @@ JWT Session Created (HTTP-only cookie)
     ↓
 Session Available via useSession() hook
 ```
+
+#### 5. Internationalization (i18n)
+
+The app supports English and Vietnamese using a lightweight custom solution (no external i18n library).
+
+**Architecture:**
+- `LanguageContext` — stores `"en" | "vi"` state, persisted in `localStorage` (`hotel-language` key)
+- `LanguageProvider` — wraps the app alongside `ThemeProvider` and `AuthProvider`
+- `translations.ts` — central dictionary mapping keys to EN/VI strings; exports a `useTranslation()` hook
+
+**Usage in components:**
+```tsx
+'use client';
+import { useTranslation } from '@/libs/translations';
+
+export default function MyComponent() {
+  const { t } = useTranslation();
+  return <h1>{t("hero.title")}</h1>;
+}
+```
+
+**CMS content:** Room fields have optional Vietnamese variants (`name_vi`, `description_vi`, `specialNote_vi`). Components check the current language and fall back to the English field when the Vietnamese variant is empty.
+
+**Currency:** Rooms have an optional `price_vnd` field. When language is `vi` and `price_vnd` is set, prices display as `₫1,500,000`; otherwise they show in USD (`$`).
 
 ---
 
@@ -237,13 +261,15 @@ hotel-management-app/
 │   │   └── BackDrop.tsx      # Single-file component
 │   │
 │   ├── context/              # React contexts
-│   │   └── themeContext.ts   # Dark mode context
+│   │   ├── themeContext.ts   # Dark mode context
+│   │   └── languageContext.ts # Language (EN/VI) context
 │   │
 │   ├── libs/                 # Utility libraries
 │   │   ├── sanity.ts         # Sanity client config
 │   │   ├── auth.ts           # NextAuth config
 │   │   ├── apis.ts           # API helper functions
-│   │   └── sanityQueries.ts  # GROQ query definitions
+│   │   ├── sanityQueries.ts  # GROQ query definitions
+│   │   └── translations.ts   # i18n dictionary & useTranslation hook
 │   │
 │   └── models/               # TypeScript types/interfaces
 │       ├── room.ts
@@ -660,6 +686,15 @@ Cmd+Shift+P → TypeScript: Restart TS Server
 - [ ] Updating reviews works
 - [ ] Cannot submit duplicate reviews
 
+**Language / i18n:**
+- [ ] Language toggle switches all UI text between EN and VI
+- [ ] CMS content (room name, description) shows Vietnamese when `_vi` fields are populated
+- [ ] CMS content falls back to English when `_vi` fields are empty
+- [ ] VND prices display with `₫` symbol and locale formatting when VI is selected
+- [ ] USD prices display when EN is selected or `price_vnd` is not set
+- [ ] Language preference persists across page reloads (localStorage)
+- [ ] No hydration mismatch warnings in console
+
 **UI/UX:**
 - [ ] Dark mode toggle works
 - [ ] Responsive on mobile devices
@@ -856,5 +891,5 @@ import './styles.css';
 
 ---
 
-**Last Updated:** November 29, 2025
+**Last Updated:** February 1, 2026
 **Maintained by:** Development Team

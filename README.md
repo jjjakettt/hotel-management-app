@@ -39,6 +39,14 @@ A modern, full-stack hotel booking and management application built with Next.js
   - Update existing reviews
   - Prevents duplicate reviews (one review per user per room)
 
+- **Multi-Language Support (English / Vietnamese)**
+  - Language toggle in the header (EN/VI)
+  - All UI strings translated via a central translation dictionary
+  - CMS content supports dual-language fields (`name_vi`, `description_vi`, `specialNote_vi`)
+  - Vietnamese Dong (VND) pricing with `₫` symbol and locale-formatted numbers
+  - Fallback to English when Vietnamese content is not available
+  - Language preference persisted in localStorage
+
 - **Additional Features**
   - Dark mode toggle with localStorage persistence
   - Newsletter signup
@@ -169,12 +177,13 @@ hotel-management-app/
 │   │       ├── rooms/                  # Room availability endpoints
 │   │       └── sanity/signUp/          # User registration
 │   ├── components/                     # React components
-│   ├── context/                        # React contexts (theme)
+│   ├── context/                        # React contexts (theme, language)
 │   ├── libs/                           # Utility libraries
 │   │   ├── sanity.ts                   # Sanity client config
 │   │   ├── auth.ts                     # NextAuth config
 │   │   ├── apis.ts                     # API functions
-│   │   └── sanityQueries.ts            # GROQ queries
+│   │   ├── sanityQueries.ts            # GROQ queries
+│   │   └── translations.ts            # i18n translation dictionary & hook
 │   └── models/                         # TypeScript types
 ├── schemaTypes/                        # Sanity CMS schemas
 ├── public/                             # Static assets
@@ -218,6 +227,12 @@ hotel-management-app/
    - Click the theme toggle icon in the header
    - Your preference is saved to localStorage
 
+7. **Language Switching**
+   - Click the language toggle (EN/VI) in the header
+   - All UI text and supported CMS content will switch languages
+   - Prices display in VND (₫) when Vietnamese is selected (if VND price is set)
+   - Your preference is saved to localStorage
+
 ### For Administrators
 
 1. **Managing Content**
@@ -231,6 +246,7 @@ hotel-management-app/
    - Open Sanity Studio
    - Create a new "Hotel Room" document
    - Fill in all required fields (name, description, price, images)
+   - Optionally fill Vietnamese fields (`name_vi`, `description_vi`, `specialNote_vi`, `price_vnd`) for multi-language support
    - Add amenities and configure room type
    - Set quantity available
    - Publish the room

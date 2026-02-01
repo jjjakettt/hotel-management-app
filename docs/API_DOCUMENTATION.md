@@ -631,9 +631,12 @@ interface User {
 interface Room {
   _id: string;
   name: string;
+  name_vi?: string;          // Vietnamese room name
   slug: string;
   description: string;
+  description_vi?: string;   // Vietnamese description
   price: number;
+  price_vnd?: number;        // Price in Vietnamese Dong
   discount: number;
   quantity: number; // Total available rooms
   type: 'Deluxe' | 'Premium' | 'Suite' | 'Presidential';
@@ -650,6 +653,7 @@ interface Room {
     amenity: string;
   }>;
   specialNote: string;
+  specialNote_vi?: string;   // Vietnamese special note
   isFeatured: boolean;
 }
 ```
@@ -747,6 +751,6 @@ For API issues or questions:
 
 ---
 
-**Last Updated:** November 29, 2025
+**Last Updated:** February 1, 2026
 **API Version:** 1.0.0
 **Maintained by:** Development Team
