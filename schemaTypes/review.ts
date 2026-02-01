@@ -4,6 +4,23 @@ const review = {
     name: 'review',
     title: 'Review',
     type: 'document',
+    preview: {
+        select: {
+            userName: 'user.name',
+            roomName: 'hotelRoom.name',
+            rating: 'userRating',
+        },
+        prepare({ userName, roomName, rating }: {
+            userName?: string;
+            roomName?: string;
+            rating?: number;
+        }) {
+            const stars = rating ? '★'.repeat(rating) + '☆'.repeat(5 - rating) : '';
+            return {
+                title: `${stars} ${userName || 'Unknown'} - ${roomName || 'Unknown'}`,
+            };
+        },
+    },
     fields: [
         defineField({
         name: 'user',
