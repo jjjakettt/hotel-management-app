@@ -56,7 +56,7 @@ const STYLES = `
     max-width: 960px;
     margin: 0 auto;
     font-family: var(--font-family-montserrat, system-ui, sans-serif);
-    color: var(--foreground, #171717);
+    color: #e5e7eb;
   }
   .booking-calendar-header {
     display: flex;
