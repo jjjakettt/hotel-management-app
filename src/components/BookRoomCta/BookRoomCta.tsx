@@ -2,6 +2,7 @@
 
 import { Dispatch, FC, SetStateAction } from "react";
 import DatePicker from "react-datepicker";
+import { useTranslation } from "@/libs/translations";
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -29,8 +30,9 @@ type Props = {
     selectedQuantity: number;
 }
 const BookRoomCta: FC<Props> = props => {
+    const { t } = useTranslation();
 
-    const { 
+    const {
         setCheckinDate,
         setCheckoutDate,
         calcMinCheckoutDate,
@@ -38,8 +40,8 @@ const BookRoomCta: FC<Props> = props => {
         setNoOfChildren,
         handleBookNowClick,
         setSelectedQuantity,
-        price, 
-        discount, 
+        price,
+        discount,
         specialNote,
         checkinDate,
         checkoutDate,
@@ -48,7 +50,6 @@ const BookRoomCta: FC<Props> = props => {
         bookedDates,
         availabilityInfo,
         selectedQuantity,
-    
     } = props;
 
     const discountPrice = price - (price / 100) * discount;
@@ -63,10 +64,10 @@ const BookRoomCta: FC<Props> = props => {
         if (!checkinDate || !checkoutDate) return 0;
         const days = calcNoOfDays();
         return days * discountPrice * selectedQuantity;
-    };  
+    };
 
     return (
-        <div className="px-7 py-6"> 
+        <div className="px-7 py-6">
             <h3>
                 <span
                 className={`${discount ? 'text-gray-400' : ''} font-bold text-xl`}
@@ -76,7 +77,7 @@ const BookRoomCta: FC<Props> = props => {
                 {discount ? (
                 <span className='font-bold text-xl'>
                     {' '}
-                    | discount {discount}%. Now{' '}
+                    | {t("booking.discount")} {discount}%. {t("booking.now")}{' '}
                     <span className='text-tertiary-dark'>${discountPrice}</span>
                 </span>
                 ) : (
@@ -92,7 +93,7 @@ const BookRoomCta: FC<Props> = props => {
                         htmlFor='check-in-date'
                         className='block text-sm font-medium text-[var(--foreground-secondary)]'
                     >
-                        Check In date
+                        {t("booking.checkin")}
                     </label>
                     <DatePicker
                         selected={checkinDate}
@@ -110,7 +111,7 @@ const BookRoomCta: FC<Props> = props => {
                         htmlFor='check-out-date'
                         className='block text-sm font-medium text-[var(--foreground-secondary)]'
                     >
-                        Check Out date
+                        {t("booking.checkout")}
                     </label>
                     <DatePicker
                         selected={checkoutDate}
@@ -130,7 +131,7 @@ const BookRoomCta: FC<Props> = props => {
                             htmlFor='adults'
                             className='block text-sm font-medium text-[var(--foreground-secondary)]'
                         >
-                            Adults
+                            {t("booking.adults")}
                         </label>
                         <input
                             type='number'
@@ -147,7 +148,7 @@ const BookRoomCta: FC<Props> = props => {
                             htmlFor='children'
                             className='block text-sm font-medium text-[var(--foreground-secondary)]'
                         >
-                            Children
+                            {t("booking.children")}
                         </label>
                         <input
                             type='number'
@@ -167,7 +168,7 @@ const BookRoomCta: FC<Props> = props => {
                                 htmlFor='quantity'
                                 className='block text-sm font-medium text-[var(--foreground-secondary)] mb-2'
                             >
-                                Rooms
+                                {t("booking.rooms")}
                             </label>
                             <input
                                 type='number'
@@ -181,11 +182,11 @@ const BookRoomCta: FC<Props> = props => {
                         </div>
                         <div className='w-1/2 pl-2'>
                             <label className='block text-sm font-medium text-[var(--foreground-secondary)] mb-2'>
-                                Availability
+                                {t("booking.availability")}
                             </label>
                             <div className='w-full h-[42px] flex items-center justify-center p-2.5 bg-[var(--background-secondary)] rounded-lg border border-gray-300'>
                                 <p className='text-sm font-medium'>
-                                    {availabilityInfo.availableQuantity} of {availabilityInfo.totalQuantity} available
+                                    {availabilityInfo.availableQuantity} {t("booking.of")} {availabilityInfo.totalQuantity} {t("booking.available")}
                                 </p>
                             </div>
                         </div>
@@ -196,34 +197,34 @@ const BookRoomCta: FC<Props> = props => {
                 {availabilityInfo && checkinDate && checkoutDate && availabilityInfo.availableQuantity === 0 && (
                     <div className='mt-4 p-3 bg-red-100 rounded-lg'>
                         <p className='text-sm font-medium text-red-700'>
-                            No rooms available for selected dates
+                            {t("booking.noRooms")}
                         </p>
                     </div>
                 )}
                 {calcNoOfDays() > 0 ? (
                     <div>
                         <p className="mt-3">
-                            Total Price: ${calcTotalPrice()}
+                            {t("booking.totalPrice")}: ${calcTotalPrice()}
                         </p>
                         <p className="text-xs text-gray-600">
-                            {selectedQuantity} room{selectedQuantity > 1 ? 's' : ''} × {calcNoOfDays()} day{calcNoOfDays() > 1 ? 's' : ''} × ${discountPrice}
+                            {selectedQuantity} {selectedQuantity > 1 ? t("booking.rooms_plural") : t("booking.room")} × {calcNoOfDays()} {calcNoOfDays() > 1 ? t("booking.days") : t("booking.day")} × ${discountPrice}
                         </p>
                     </div>
                 ) : (
                     <></>
                 )}
-                
+
                 <button
                     disabled={availabilityInfo?.availableQuantity === 0}
                     onClick={handleBookNowClick}
-                    className={`w-full mt-6 px-6 md:px-[50px] lg:px-[72px] py-2 md:py-5 rounded-lg md:rounded-2xl font-bold text-base md:text-xl text-white transition-all duration-300 
+                    className={`w-full mt-6 px-6 md:px-[50px] lg:px-[72px] py-2 md:py-5 rounded-lg md:rounded-2xl font-bold text-base md:text-xl text-white transition-all duration-300
                         ${availabilityInfo?.availableQuantity === 0
-                            ? 'bg-gray-500 cursor-not-allowed' 
+                            ? 'bg-gray-500 cursor-not-allowed'
                             : 'bg-primary shadow-sm shadow-primary hover:scale-110'
                         }`
                     }
                 >
-                    {availabilityInfo?.availableQuantity === 0 ? 'Fully Booked' : 'Book Now'}
+                    {availabilityInfo?.availableQuantity === 0 ? t("booking.fullyBooked") : t("booking.bookNow")}
                 </button>
         </div>
     );

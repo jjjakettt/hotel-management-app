@@ -2,7 +2,7 @@
 import Image from "next/image";
 import useSWR from "swr";
 import axios from "axios";
-import { signOut } from "next-auth/react"; 
+import { signOut } from "next-auth/react";
 
 import { use, useState } from 'react';
 import { getUserBookings } from "@/libs/apis";
@@ -16,11 +16,13 @@ import Chart from "@/components/Chart/Chart";
 import RatingModal from "@/components/RatingModal/RatingModal";
 import BackDrop from "@/components/BackDrop.tsx/BackDrop";
 import toast from "react-hot-toast";
+import { useTranslation } from "@/libs/translations";
 
 const UserDetails = (props: {params: Promise<{ id: string }> }) => {
 
     const params = use(props.params);
     const userId = params.id;
+    const { t } = useTranslation();
 
     const [currentNav, setCurrentNav] = useState<
         "bookings" | "amount" | "rating"
@@ -33,11 +35,11 @@ const UserDetails = (props: {params: Promise<{ id: string }> }) => {
     const [ratingText, setRatingText] = useState('');
 
     const toggleRatingModal = () => setIsRatingVisible(prevState => !prevState);
-    
+
 
     const reviewSubmitHandler = async () => {
         if (!ratingText.trim().length || !ratingValue) {
-            return toast.error('Please provide a rating text and a rating');
+            return toast.error(t("toast.provideRating"));
         }
 
         if (!roomId) toast.error('Id not provided');
@@ -51,10 +53,10 @@ const UserDetails = (props: {params: Promise<{ id: string }> }) => {
                 roomId,
             });
             console.log(data);
-            toast.success('Review Submitted');
+            toast.success(t("toast.reviewSubmitted"));
         } catch (error) {
             console.log(error);
-            toast.error('Review Failed');
+            toast.error(t("toast.reviewFailed"));
         } finally {
             setRatingText('');
             setRatingValue(null);
@@ -69,26 +71,25 @@ const UserDetails = (props: {params: Promise<{ id: string }> }) => {
         const { data } = await axios.get<User>("/api/users");
         return data;
     }
-    const { 
-        data: userBookings, 
-        error, 
-        isLoading 
+    const {
+        data: userBookings,
+        error,
+        isLoading
     } = useSWR("/api/userbooking", fetchUserBooking);
 
     const {
-        data: userData, 
-        isLoading: loadingUserData, 
+        data: userData,
+        isLoading: loadingUserData,
         error: errorGettingUserData,
     } = useSWR("/api/users", fetchUserData);
 
-    if (error || errorGettingUserData) 
+    if (error || errorGettingUserData)
         throw new Error("Cannot fetch data");
-    if (typeof userBookings === "undefined" && !isLoading) 
+    if (typeof userBookings === "undefined" && !isLoading)
         throw new Error("Cannot fetch data");
 
     if (loadingUserData) return <LoadingSpinner/>;
     if (!userData) throw new Error('Cannot fetch data');
-    // if (!userBookings) throw new Error('Cannot fetch data');
 
 
     return (
@@ -103,11 +104,11 @@ const UserDetails = (props: {params: Promise<{ id: string }> }) => {
                             height={143}
                             className='img scale-animation rounded-full'
                         />
-                       
+
                     </div>
                     <div className='font-normal py-4 text-left'>
                         {userData.about && (
-                            <h6 className='text-xl font-bold pb-3'>About</h6>
+                            <h6 className='text-xl font-bold pb-3'>{t("user.about")}</h6>
                         )}
                         <p className='text-sm'>{userData.about ?? ''}</p>
                     </div>
@@ -115,17 +116,17 @@ const UserDetails = (props: {params: Promise<{ id: string }> }) => {
                         <h6 className='text-xl font-bold pb-3'>{userData.name}</h6>
                     </div>
                     <div className='flex items-center'>
-                        <p className='mr-2'>Sign Out</p>
+                        <p className='mr-2'>{t("user.signOut")}</p>
                         <FaSignOutAlt
                             className='text-3xl cursor-pointer'
                             onClick={() => signOut({ callbackUrl: '/' })}
                         />
-                    </div> 
+                    </div>
                 </div>
-                
+
                 <div className='md:col-span-8 lg:col-span-9'>
                     <div className='flex items-center'>
-                        <h5 className='text-2xl font-bold mr-3'>Hello, {userData.name}</h5>
+                        <h5 className='text-2xl font-bold mr-3'>{t("user.hello")}, {userData.name}</h5>
                     </div>
                     <div className='md:hidden w-14 h-14 rounded-l-full overflow-hidden'>
                         <Image
@@ -140,10 +141,10 @@ const UserDetails = (props: {params: Promise<{ id: string }> }) => {
                         {userData.about ?? ''}
                     </p>
                     <p className='text-xs py-2 font-medium'>
-                        Joined In {userData._createdAt.split('T')[0]}
+                        {t("user.joinedIn")} {userData._createdAt.split('T')[0]}
                     </p>
                     <div className='md:hidden flex items-center my-2'>
-                        <p className='mr-2'>Sign out</p>
+                        <p className='mr-2'>{t("user.signOut")}</p>
                         <FaSignOutAlt
                             className='text-3xl cursor-pointer'
                             onClick={() => signOut({ callbackUrl: '/' })}
@@ -162,7 +163,7 @@ const UserDetails = (props: {params: Promise<{ id: string }> }) => {
                         >
                             <BsJournalBookmarkFill />
                             <a className='inline-flex items-center mx-1 md:mx-3 text-xs md:text-sm font-medium'>
-                            Current Bookings
+                            {t("user.currentBookings")}
                             </a>
                         </li>
                         </ol>
@@ -177,7 +178,7 @@ const UserDetails = (props: {params: Promise<{ id: string }> }) => {
                         >
                             <GiMoneyStack />
                             <a className='inline-flex items-center mx-1 md:mx-3 text-xs md:text-sm font-medium'>
-                            Amount Spent
+                            {t("user.amountSpent")}
                             </a>
                         </li>
                         </ol>

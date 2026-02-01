@@ -2,6 +2,7 @@
 
 import { Dispatch, FC, SetStateAction } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/libs/translations';
 
 import { Booking } from '@/models/booking';
 
@@ -12,19 +13,20 @@ type Props = {
 };
 
 const Table: FC<Props> = ({ bookingDetails, setRoomId, toggleRatingModal }) => {
-    const router = useRouter()
+    const router = useRouter();
+    const { t, language } = useTranslation();
 
     return (
         <div className='overflow-x-auto max-w-[340px] rounded-lg mx-auto md:max-w-full shadow-md sm:rounded-lg'>
         <table className='w-full text-sm text-left text-gray-500'>
             <thead className='text-xs text-gray-700 uppercase bg-gray-50'>
             <tr>
-                <th className='px-6 py-3'>Room name</th>
-                <th className='px-6 py-3'>Unit Price</th>
-                <th className='px-6 py-3'>Price</th>
-                <th className='px-6 py-3'>Discount</th>
-                <th className='px-6 py-3'>No. Days Booked</th>
-                <th className='px-6 py-3'>Quantity</th>
+                <th className='px-6 py-3'>{t("table.roomName")}</th>
+                <th className='px-6 py-3'>{t("table.unitPrice")}</th>
+                <th className='px-6 py-3'>{t("table.price")}</th>
+                <th className='px-6 py-3'>{t("table.discount")}</th>
+                <th className='px-6 py-3'>{t("table.daysBooked")}</th>
+                <th className='px-6 py-3'>{t("table.quantity")}</th>
                 <th className='px-6 py-3'></th>
             </tr>
             </thead>
@@ -32,11 +34,11 @@ const Table: FC<Props> = ({ bookingDetails, setRoomId, toggleRatingModal }) => {
             {bookingDetails.map(booking => (
 
                 <tr key={booking._id} className='bg-white border-b hover:bg-gray-50'>
-                    <th onClick= {() => 
+                    <th onClick= {() =>
                             router.push(`/rooms/${booking.hotelRoom.slug.current}`)
                         }
                         className='px-6 underline text-blue-600 cursor-pointer py-4 font-medium whitespace-nowrap'>
-                        {booking.hotelRoom.name}
+                        {(language === "vi" && booking.hotelRoom.name_vi) ? booking.hotelRoom.name_vi : booking.hotelRoom.name}
                     </th>
                     <td className='px-6 py-4'>{booking.hotelRoom.price}</td>
                     <td className='px-6 py-4'>{booking.totalPrice}</td>
@@ -51,7 +53,7 @@ const Table: FC<Props> = ({ bookingDetails, setRoomId, toggleRatingModal }) => {
                         }}
                         className='font-medium text-blue-600 hover:underline'
                     >
-                        Rate
+                        {t("table.rate")}
                     </button>
                 </td>
                 </tr>

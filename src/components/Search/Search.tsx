@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FC } from "react";
+import { useTranslation } from "@/libs/translations";
 
 type Props = {
     roomTypeFilter: string;
@@ -10,12 +11,14 @@ type Props = {
 }
 
 const Search: FC<Props> = ({
-    roomTypeFilter, 
-    searchQuery, 
-    setRoomTypeFilter, 
+    roomTypeFilter,
+    searchQuery,
+    setRoomTypeFilter,
     setSearchQuery,
-    }) => {    
+    }) => {
         const router = useRouter();
+        const { t } = useTranslation();
+
         const handleRoomTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
             setRoomTypeFilter(event.target.value);
         };
@@ -23,7 +26,6 @@ const Search: FC<Props> = ({
             setSearchQuery(event.target.value);
         };
         const handleFilterClick = () => {
-            // Navigate to the rooms page with the query
             router.push(`/rooms?roomType=${roomTypeFilter}&searchQuery=${searchQuery}`);
         };
 
@@ -32,40 +34,40 @@ const Search: FC<Props> = ({
                 <div className="container mx-auto flex gap-4 justify-between items-center">
                     <div className="w-full md:1/3 lg:w-auto mb-4 md:mb-0">
                         <label className="block text-sm font-medium mb-2 text-black">
-                            Room Type
+                            {t("search.roomType")}
                         </label>
                         <div className="relative">
-                            <select 
+                            <select
                                 value = {roomTypeFilter}
-                                onChange={handleRoomTypeChange} 
+                                onChange={handleRoomTypeChange}
                                 className="w-full px-4 py-2 capitalize rounded leading-tight bg-[var(--background)] text-[var(--foreground)] focus:outline-none cursor-pointer">
-                                <option value="All">All</option>
-                                <option value="Deluxe">Deluxe</option>
-                                <option value="Premium">Premium</option>
-                                <option value="Suite">Suite</option>
-                                <option value="Presidential">Presidential</option>
+                                <option value="All">{t("search.all")}</option>
+                                <option value="Deluxe">{t("search.deluxe")}</option>
+                                <option value="Premium">{t("search.premium")}</option>
+                                <option value="Suite">{t("search.suite")}</option>
+                                <option value="Presidential">{t("search.presidential")}</option>
                             </select>
                         </div>
                     </div>
-                    <div className="w-full md:1/3 lg:w-auto mb-4 md:mb-0">  
-                        <label className="block text-sm font-medium mb-2 text-black">Search</label>
-                        <input 
-                            type="text" 
-                            id="search" 
-                            placeholder="Search..."
-                            className="w-full px-4 py-3 rounded leading-tight  bg-[var(--background)] focus:outline-none placeholder:text-[var(--foreground)] text-[var(--foreground)]"  
+                    <div className="w-full md:1/3 lg:w-auto mb-4 md:mb-0">
+                        <label className="block text-sm font-medium mb-2 text-black">{t("search.search")}</label>
+                        <input
+                            type="text"
+                            id="search"
+                            placeholder={t("search.placeholder")}
+                            className="w-full px-4 py-3 rounded leading-tight  bg-[var(--background)] focus:outline-none placeholder:text-[var(--foreground)] text-[var(--foreground)]"
                             value={searchQuery}
                             onChange={handleSearchQueryChange}
                         />
                     </div>
-                    <button 
-                    className="btn-primary" 
-                    type="button" 
+                    <button
+                    className="btn-primary"
+                    type="button"
                     onClick={handleFilterClick}
 
-                    >Search</button>
+                    >{t("search.search")}</button>
                 </div>
-                
+
             </section>
         )
 }

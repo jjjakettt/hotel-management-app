@@ -16,6 +16,7 @@ import LoadingSpinner from "../../loading";
 import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery";
 import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
 import RoomReview from "@/components/RoomReview/RoomReview";
+import { useTranslation } from "@/libs/translations";
 
 
 const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
@@ -25,6 +26,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
 
     const { data: session, status } = useSession();
     const router = useRouter();
+    const { t, language } = useTranslation();
 
     const [ checkinDate, setCheckinDate ] = useState<Date | null>(null);
     const [ checkoutDate, setCheckoutDate ] = useState<Date | null>(null);
@@ -36,8 +38,6 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
     const {data: room, error, isLoading} = useSWR("/api/room", fetchRoom);
     const [selectedQuantity, setSelectedQuantity] = useState(1);
 
-
-
     // For booked dates
     const { data: bookedDates = [] } = useSWR(
         room?._id ? `/api/booked-dates-${room._id}` : null,
@@ -45,15 +45,15 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
     );
 
     // For availability
-    const availabilityKey = room?._id && checkinDate && checkoutDate 
+    const availabilityKey = room?._id && checkinDate && checkoutDate
         ? `/api/availability-${room._id}-${checkinDate.toISOString().split('T')[0]}-${checkoutDate.toISOString().split('T')[0]}`
         : null;
 
     const { data: availabilityInfo } = useSWR(
         availabilityKey,
         availabilityKey && room?._id ? () => getAvailability(
-            room._id, 
-            checkinDate!.toISOString().split('T')[0], 
+            room._id,
+            checkinDate!.toISOString().split('T')[0],
             checkoutDate!.toISOString().split('T')[0]
         ) : null
     );
@@ -71,7 +71,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
     if (!room) return <LoadingSpinner />;
 
     const calcMinCheckoutDate = () => {
-        if (checkinDate) { 
+        if (checkinDate) {
             const nextDay = new Date(checkinDate);
             nextDay.setDate(nextDay.getDate() + 1);
             return nextDay;
@@ -88,31 +88,28 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
 
 
     const handleBookNowClick = async () => {
-        // Check if user is logged in
-        if (status === 'loading') return; 
+        if (status === 'loading') return;
         if (!session) {
             router.push('/auth');
-            return toast.error("Please login before booking a room.");
+            return toast.error(t("toast.loginRequired"));
         }
 
-        if(!checkinDate || !checkoutDate) 
-            return toast.error("Please provide checkin / checkout dates.");
+        if(!checkinDate || !checkoutDate)
+            return toast.error(t("toast.provideDates"));
 
         if(checkinDate > checkoutDate)
-            return toast.error("Please choose a valid checkin period.");
+            return toast.error(t("toast.invalidDates"));
 
         const numberOfDays = calcNumDays();
         const discountPrice = room.price - (room.price / 100) * room.discount;
         const totalPrice = discountPrice * numberOfDays * selectedQuantity;
 
         try {
-            toast.loading('Creating your booking...');
-            
-            // Format dates for Sanity
+            toast.loading(t("toast.creatingBooking"));
+
             const formattedCheckinDate = checkinDate.toISOString().split('T')[0];
             const formattedCheckoutDate = checkoutDate.toISOString().split('T')[0];
-            
-            // Create booking directly in Sanity
+
             await createBooking({
                 adults,
                 checkinDate: formattedCheckinDate,
@@ -121,32 +118,25 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                 hotelRoom: room._id,
                 numberOfDays,
                 discount: room.discount,
-                quantity: selectedQuantity, 
+                quantity: selectedQuantity,
                 totalPrice,
                 user: session.user.id
             });
-            
 
             toast.dismiss();
-            toast.success('Booking confirmed! Payment will be collected at reception.');
-            
-            // Redirect to user bookings page
+            toast.success(t("toast.bookingConfirmed"));
+
             router.push(`/users/${session.user.id}`);
         } catch (error) {
             toast.dismiss();
             console.error('Failed to create booking:', error);
-            toast.error('Failed to create booking. Please try again.');
+            toast.error(t("toast.bookingFailed"));
         }
     };
 
-
-
-    if (error) 
-        throw new Error("Cannot fetch data");
-    if (typeof room === "undefined" && !isLoading) 
-        throw new Error("Cannot fetch data");
-
-    if (!room) return <LoadingSpinner/>;
+    const displayName = (language === "vi" && room.name_vi) ? room.name_vi : room.name;
+    const displayDesc = (language === "vi" && room.description_vi) ? room.description_vi : room.description;
+    const displaySpecialNote = (language === "vi" && room.specialNote_vi) ? room.specialNote_vi : room.specialNote;
 
     return (
         <div>
@@ -159,27 +149,29 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                         {/* Room Information */}
                         <div>
                             <h2 className="font-bold text-left text-lg md:text-2xl">
-                                {room.name} ({room.dimension})
+                                {displayName} ({room.dimension})
                             </h2>
                             <div className="flex my-11">
                                 {room.offeredAmenities.map(ammenity => (
-                                    <div 
-                                        key={ammenity._key} 
+                                    <div
+                                        key={ammenity._key}
                                         className="md:w-44 w-fit text-center px-2 md:px-0 h-20 md:h-40 mr-3 bg-[var(--background-secondary)] rounded-lg grid place-content-center"
                                     >
                                         <i className={`fa-solid ${ammenity.icon} md:text-2xl`}></i>
-                                        <p className="text-xs md:text-base pt-3">{ammenity.amenity}</p>
+                                        <p className="text-xs md:text-base pt-3">
+                                            {(language === "vi" && ammenity.amenity_vi) ? ammenity.amenity_vi : ammenity.amenity}
+                                        </p>
                                     </div>
                                 ))}
                             </div>
                             {/* Room Description Section */}
                             <div className='mb-11'>
-                                <h2 className='font-bold text-3xl mb-2'>Description</h2>
-                                <p>{room.description}</p>
+                                <h2 className='font-bold text-3xl mb-2'>{t("room.description")}</h2>
+                                <p>{displayDesc}</p>
                             </div>
                             {/* Offered Amenities Section */}
                             <div className='mb-11'>
-                                <h2 className='font-bold text-3xl mb-2'>Offered Amenities</h2>
+                                <h2 className='font-bold text-3xl mb-2'>{t("room.offeredAmenities")}</h2>
                                 <div className='grid grid-cols-2'>
                                 {room.offeredAmenities.map(amenity => (
                                     <div
@@ -188,7 +180,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                                     >
                                     <i className={`fa-solid ${amenity.icon}`}></i>
                                     <p className='text-xs md:text-base ml-2'>
-                                        {amenity.amenity}
+                                        {(language === "vi" && amenity.amenity_vi) ? amenity.amenity_vi : amenity.amenity}
                                     </p>
                                     </div>
                                 ))}
@@ -196,44 +188,42 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                             </div>
                             {/* Safety and Hygiene Section */}
                             <div className='mb-11'>
-                                <h2 className='font-bold text-3xl mb-2'>Safety And Hygiene</h2>
+                                <h2 className='font-bold text-3xl mb-2'>{t("room.safetyHygiene")}</h2>
                                 <div className='grid grid-cols-2'>
                                 <div className='flex items-center my-1 md:my-0'>
                                     <MdOutlineCleaningServices />
-                                    <p className='ml-2 md:text-base text-xs'>Daily Cleaning</p>
+                                    <p className='ml-2 md:text-base text-xs'>{t("room.dailyCleaning")}</p>
                                 </div>
                                 <div className='flex items-center my-1 md:my-0'>
                                     <LiaFireExtinguisherSolid />
-                                    <p className='ml-2 md:text-base text-xs'>Fire Extinguishers</p>
+                                    <p className='ml-2 md:text-base text-xs'>{t("room.fireExtinguishers")}</p>
                                 </div>
                                 <div className='flex items-center my-1 md:my-0'>
                                     <AiOutlineMedicineBox />
-                                    <p className='ml-2 md:text-base text-xs'>Disinfections and Sterilizations</p>
+                                    <p className='ml-2 md:text-base text-xs'>{t("room.disinfections")}</p>
                                 </div>
                                 <div className='flex items-center my-1 md:my-0'>
                                     <GiSmokeBomb />
-                                    <p className='ml-2 md:text-base text-xs'>Smoke Detectors</p>
+                                    <p className='ml-2 md:text-base text-xs'>{t("room.smokeDetectors")}</p>
                                 </div>
                                 </div>
                             </div>
                             {/* Reviews */}
                             <div className='shadow-[0_4px_6px_var(--shadow-color)] rounded-lg p-6'>
                                 <div className='items-center mb-4'>
-                                <p className='md:text-lg font-semibold'>Customer Reviews</p>
+                                <p className='md:text-lg font-semibold'>{t("room.customerReviews")}</p>
                                 </div>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                                    {/* Reviews */}
                                     <RoomReview roomId={room._id} />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="md:col-span-4 rounded-xl shadow-[0_4px_6px_var(--shadow-color)] sticky top-10 h-fit overflow-auto">
-                        {/* Book Room Call-to-action */}
-                        <BookRoomCta 
-                            discount={room.discount} 
-                            price={room.price} 
-                            specialNote={room.specialNote}
+                        <BookRoomCta
+                            discount={room.discount}
+                            price={room.price}
+                            specialNote={displaySpecialNote}
                             checkinDate={checkinDate}
                             setCheckinDate={setCheckinDate}
                             checkoutDate={checkoutDate}

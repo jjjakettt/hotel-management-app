@@ -6,6 +6,7 @@ import { signUp } from "next-auth-sanity/client";
 import { signIn, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "@/libs/translations";
 
 
 const defaultFormData = {
@@ -16,7 +17,8 @@ const defaultFormData = {
 
 const Auth = () => {
     const [formData, setFormData] = useState(defaultFormData);
-    const inputStyles = 
+    const { t } = useTranslation();
+    const inputStyles =
         "border border-gray-300 sm:text-sm rounded-lg block w-full p-2.5 focus:outlines-none";
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -24,25 +26,20 @@ const Auth = () => {
         setFormData({...formData, [name]: value});
     };
 
-    // document how session changes as user logs in 
     const {data: session } = useSession();
-    // console.log(session);
     const router = useRouter();
 
-    // navigation back to home page
     useEffect(() => {
         if (session) router.push("/");
     }, [router, session]);
 
-    // handles user login
     const loginHandler = async () => {
         try{
             await signIn();
-            // push user to homepage.
             router.push("/");
         } catch (error) {
             console.log(error);
-            toast.error("Login Unsuccessful.");
+            toast.error(t("toast.loginFailed"));
         }
     };
 
@@ -51,11 +48,10 @@ const Auth = () => {
         try {
             const user = await signUp(formData);
             if (user){
-                toast.success("Sign Up Successful. Please Sign In.");
+                toast.success(t("toast.signUpSuccess"));
             }
-            console.log(formData);
         } catch(error) {
-            toast.error("Something went wrong.");
+            toast.error(t("toast.somethingWrong"));
             console.log(error);
         } finally {
             setFormData(defaultFormData);
@@ -67,53 +63,51 @@ const Auth = () => {
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8 w-80 md:w-[70%] mx-auto">
             <div className="flex mb-8 flex-col md:flex-row items-center justify-between">
                 <h1 className="text-xl font-bold leading-tight tracking-tight md:text-2xl">
-                    Create an Account
+                    {t("auth.createAccount")}
                 </h1>
-                <p>OR</p>
+                <p>{t("auth.or")}</p>
                 <span className="inline-flex items-center">
-                    <FcGoogle 
+                    <FcGoogle
                     onClick={loginHandler}
                     className="text-4xl cursor-pointer text-[var(--foreground)]"/>
                 </span>
             </div>
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-                <input 
-                    type="text" 
-                    name="name" 
-                    placeholder="John Doe"
+                <input
+                    type="text"
+                    name="name"
+                    placeholder={t("auth.namePlaceholder")}
                     required
                     className={inputStyles}
                     value = {formData.name}
                     onChange={handleInputChange}
-                /> 
-                <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="name@company.com"
+                />
+                <input
+                    type="email"
+                    name="email"
+                    placeholder={t("auth.emailPlaceholder")}
                     required
                     className={inputStyles}
                     value = {formData.email}
                     onChange={handleInputChange}
-
                 />
-                <input 
-                    type="password" 
-                    name="password" 
-                    placeholder="Password"
+                <input
+                    type="password"
+                    name="password"
+                    placeholder={t("auth.passwordPlaceholder")}
                     required
                     minLength={6}
                     className={inputStyles}
                     value = {formData.password}
                     onChange={handleInputChange}
-
                 />
 
                 <button type="submit" className="w-full bg-tertiary-dark focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                    Sign Up
+                    {t("auth.signUp")}
                 </button>
-                <button 
+                <button
                 onClick={loginHandler}
-                className="text-blue-700 underline">login</button>
+                className="text-blue-700 underline">{t("auth.login")}</button>
             </form>
         </div>
 

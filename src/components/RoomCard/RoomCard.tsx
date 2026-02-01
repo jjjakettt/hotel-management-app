@@ -1,23 +1,30 @@
+'use client';
+
 import { Room } from "@/models/room"
 import { FC } from "react"
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslation } from "@/libs/translations";
 
 type Props = {
     room: Room;
-}; 
+};
 
 const RoomCard: FC<Props> = props => {
-    const{
-        room: { coverImage, name, price, description, slug, quantity },
+    const {
+        room: { coverImage, name, name_vi, price, description, description_vi, slug, quantity },
     } = props;
+
+    const { t, language } = useTranslation();
+    const displayName = (language === "vi" && name_vi) ? name_vi : name;
+    const displayDesc = (language === "vi" && description_vi) ? description_vi : description;
 
     return (
         <div className="rounded-xl w-72 mb-10 mx-auto md:mx-0 overflow-hidden text-black">
             <div className="h-60 overflow-hidden">
-                <Image 
-                    src={coverImage.url} 
-                    alt={name} 
+                <Image
+                    src={coverImage.url}
+                    alt={displayName}
                     width={250}
                     height={250}
                     className="img scale-animation"
@@ -26,18 +33,18 @@ const RoomCard: FC<Props> = props => {
 
             <div className="p-4 bg-white">
                 <div className="flex justify-between text-xl font-semibold">
-                    <p>{name}</p>
+                    <p>{displayName}</p>
                     <p>${price}</p>
                 </div>
-                <p className="text-primary font-medium">{quantity} available</p>
+                <p className="text-primary font-medium">{quantity} {t("room.available")}</p>
                 <p className="pt-3 pb-6">
-                    {description.slice(1,100)}...
+                    {displayDesc.slice(1,100)}...
                 </p>
-                <Link 
-                    href={`/rooms/${slug.current}`} 
+                <Link
+                    href={`/rooms/${slug.current}`}
                     className="bg-primary inline-block text-center w-full py-4 rounded-xl text-white text-xl font-bold hover:-translate-y-2 hover:shadow-lg transition-all duration-500"
                 >
-                    Book Now
+                    {t("booking.bookNow")}
                 </Link>
             </div>
         </div>
