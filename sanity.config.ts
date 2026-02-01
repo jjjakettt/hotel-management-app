@@ -2,6 +2,7 @@ import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
+import {bookingCalendarPlugin} from './src/sanity/plugins/bookingCalendar'
 
 export default defineConfig({
   name: 'default',
@@ -12,7 +13,7 @@ export default defineConfig({
 
   basePath: "/studio",
 
-  plugins: [structureTool(), visionTool()],
+  plugins: [structureTool(), visionTool(), bookingCalendarPlugin()],
 
   schema: {
     types: schemaTypes,
