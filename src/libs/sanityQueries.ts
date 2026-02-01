@@ -1,11 +1,20 @@
 import { groq } from "next-sanity";
 
+const imageProjection = `{
+    _key,
+    "url": coalesce(url, file.asset->url)
+}`;
+
+const coverImageProjection = `{
+    "url": coalesce(url, file.asset->url)
+}`;
+
 export const getFeaturedRoomQuery = groq`*[_type == "hotelRoom" && isFeatured == true][0] {
     _id,
     description,
     description_vi,
     discount,
-    images,
+    "images": images[] ${imageProjection},
     isFeatured,
     name,
     name_vi,
@@ -13,12 +22,12 @@ export const getFeaturedRoomQuery = groq`*[_type == "hotelRoom" && isFeatured ==
     price_vnd,
     quantity,
     slug,
-    coverImage
+    "coverImage": coverImage ${coverImageProjection}
 }`;
 
 export const getRoomsQuery = groq`*[_type == "hotelRoom"] {
     _id,
-    coverImage,
+    "coverImage": coverImage ${coverImageProjection},
     description,
     description_vi,
     dimension,
@@ -35,11 +44,11 @@ export const getRoomsQuery = groq`*[_type == "hotelRoom"] {
 
 export const getRoom = groq`*[_type == "hotelRoom" && slug.current == $slug][0] {
     _id,
-    coverImage,
+    "coverImage": coverImage ${coverImageProjection},
     description,
     description_vi,
     dimension,
-    images,
+    "images": images[] ${imageProjection},
     isBooked,
     isFeatured,
     name,
@@ -97,7 +106,7 @@ export const getRoomReviewsQuery = groq`*[_type == 'review' && hotelRoom._ref ==
 
 export const getAvailableRoomsQuery = groq`*[_type == "hotelRoom" && !(_id in *[_type == "booking" && checkinDate <= $checkinDate && checkoutDate > $checkinDate].hotelRoom._ref)] {
     _id,
-    coverImage,
+    "coverImage": coverImage ${coverImageProjection},
     description,
     description_vi,
     dimension,

@@ -74,11 +74,12 @@ const hotelRoom = {
                 {
                     type: 'object',
                     fields: [
-                        { name: 'url', type: 'url', title: 'URL' },
-                        { name: 'file', type: 'file', title: 'File' },
+                        { name: 'url', type: 'url', title: 'URL', description: 'External image URL (leave empty if uploading a file)' },
+                        { name: 'file', type: 'image', title: 'File', description: 'Upload an image (leave empty if using a URL)' },
                     ]
                 }
             ],
+            description: 'We recommend adding at least 5 images to give guests a comprehensive view of the room.',
             validation: Rule => Rule.required().min(1).error('Minimum of 1 image required.'),
         }),
         defineField({
@@ -86,8 +87,8 @@ const hotelRoom = {
             title: 'Cover Image',
             type: 'object',
             fields: [
-                {name: 'url', type: 'url', title: 'URL'},
-                {name: 'file', type: 'file', title: 'File'}
+                {name: 'url', type: 'url', title: 'URL', description: 'External image URL (leave empty if uploading a file)'},
+                {name: 'file', type: 'image', title: 'File', description: 'Upload an image (leave empty if using a URL)'}
             ],
             validation: Rule => Rule.required().error('Cover Image is required.'),
         }),
