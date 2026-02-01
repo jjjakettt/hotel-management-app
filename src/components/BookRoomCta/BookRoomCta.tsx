@@ -15,6 +15,7 @@ type Props = {
     handleBookNowClick: () => void;
     setSelectedQuantity: Dispatch<SetStateAction<number>>;
     price: number;
+    price_vnd?: number;
     discount: number;
     isBooked: boolean;
     specialNote: string;
@@ -30,7 +31,7 @@ type Props = {
     selectedQuantity: number;
 }
 const BookRoomCta: FC<Props> = props => {
-    const { t } = useTranslation();
+    const { t, language } = useTranslation();
 
     const {
         setCheckinDate,
@@ -41,6 +42,7 @@ const BookRoomCta: FC<Props> = props => {
         handleBookNowClick,
         setSelectedQuantity,
         price,
+        price_vnd,
         discount,
         specialNote,
         checkinDate,
@@ -52,7 +54,11 @@ const BookRoomCta: FC<Props> = props => {
         selectedQuantity,
     } = props;
 
-    const discountPrice = price - (price / 100) * discount;
+    const useVnd = language === "vi" && !!price_vnd;
+    const displayPrice = useVnd ? price_vnd! : price;
+    const sym = useVnd ? "₫" : "$";
+    const fmt = (n: number) => useVnd ? n.toLocaleString() : String(n);
+    const discountPrice = displayPrice - (displayPrice / 100) * discount;
 
     const calcNoOfDays = () => {
         if(!checkinDate || !checkoutDate) return 0;
@@ -77,13 +83,13 @@ const BookRoomCta: FC<Props> = props => {
                 <span
                 className={`${discount ? 'text-gray-400' : ''} font-bold text-xl`}
                 >
-                $ {price}
+                {sym}{fmt(displayPrice)}
                 </span>
                 {discount ? (
                 <span className='font-bold text-xl'>
                     {' '}
                     | {t("booking.discount")} {discount}%. {t("booking.now")}{' '}
-                    <span className='text-tertiary-dark'>${discountPrice}</span>
+                    <span className='text-tertiary-dark'>{sym}{fmt(discountPrice)}</span>
                 </span>
                 ) : (
                 ''
@@ -213,10 +219,10 @@ const BookRoomCta: FC<Props> = props => {
             {calcNoOfDays() > 0 ? (
                 <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                     <p className="font-semibold text-lg">
-                        {t("booking.totalPrice")}: ${calcTotalPrice()}
+                        {t("booking.totalPrice")}: {sym}{fmt(calcTotalPrice())}
                     </p>
                     <p className="text-sm text-gray-600">
-                        {selectedQuantity} {selectedQuantity > 1 ? t("booking.rooms_plural") : t("booking.room")} × {calcNoOfDays()} {calcNoOfDays() > 1 ? t("booking.days") : t("booking.day")} × ${discountPrice}
+                        {selectedQuantity} {selectedQuantity > 1 ? t("booking.rooms_plural") : t("booking.room")} × {calcNoOfDays()} {calcNoOfDays() > 1 ? t("booking.days") : t("booking.day")} × {sym}{fmt(discountPrice)}
                     </p>
                 </div>
             ) : <></>}
