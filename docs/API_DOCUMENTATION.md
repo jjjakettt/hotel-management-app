@@ -589,6 +589,8 @@ interface Booking {
   quantity: number;
   totalPrice: number;
   discount: number;
+  checkedIn: boolean;  // Admin-toggled via Booking Calendar tool
+  checkedOut: boolean; // Admin-toggled via Booking Calendar tool
 }
 ```
 
@@ -643,12 +645,12 @@ interface Room {
   dimension: string;
   numberOfBeds: number;
   coverImage: {
-    url: string;
+    url: string; // Resolved via coalesce(url, file.asset->url)
   };
   images: Array<{
-    url: string;
+    url: string; // Resolved via coalesce(url, file.asset->url)
   }>;
-  offeredAmenities: Array<{
+  offeredAmenities?: Array<{ // Nullable — use fallback when accessing
     icon: string;
     amenity: string;
   }>;

@@ -284,6 +284,9 @@ hotel-management-app/
 │   ├── booking.ts
 │   └── review.ts
 │
+├── src/sanity/plugins/       # Custom Sanity Studio plugins
+│   └── bookingCalendar.tsx   # Booking calendar tool (check-in/out tracking)
+│
 ├── public/                   # Static assets
 │   └── images/
 │
@@ -404,6 +407,19 @@ GROQ is Sanity's query language. Examples:
   hotelRoom._ref == $roomId &&
   (checkinDate <= $checkin && checkoutDate > $checkin)
 ]
+```
+
+**Image URL Resolution (coalesce pattern):**
+
+Room images support both external URLs and Sanity file uploads. GROQ queries use `coalesce` to resolve whichever is populated:
+```groq
+"coverImage": coverImage {
+    "url": coalesce(url, file.asset->url)
+}
+"images": images[] {
+    _key,
+    "url": coalesce(url, file.asset->url)
+}
 ```
 
 ### 4. NextAuth Session Management
@@ -587,6 +603,41 @@ export default function UserProfile() {
    ```
 3. **Update TypeScript types in `src/models/`**
 4. **Update GROQ queries if needed**
+
+### Adding a Custom Sanity Studio Tool
+
+Custom tools appear in the Studio's top navigation bar alongside "Structure" and "Vision".
+
+1. **Create the plugin file** in `src/sanity/plugins/`:
+   ```tsx
+   import { definePlugin, type Tool } from 'sanity'
+   import { SomeIcon } from '@sanity/icons'
+
+   function MyToolComponent() {
+     const client = useClient({ apiVersion: '2024-01-01' })
+     // Fetch data, render UI...
+   }
+
+   export const myPlugin = definePlugin({
+     name: 'my-tool',
+     tools: [{
+       name: 'my-tool',
+       title: 'My Tool',
+       icon: SomeIcon,
+       component: MyToolComponent,
+     }],
+   })
+   ```
+
+2. **Register in `sanity.config.ts`:**
+   ```typescript
+   import { myPlugin } from './src/sanity/plugins/myPlugin'
+
+   plugins: [structureTool(), visionTool(), myPlugin()],
+   ```
+
+**Existing custom tools:**
+- **Booking Calendar** (`bookingCalendar.tsx`) — Monthly calendar showing check-ins/check-outs with admin check-off functionality
 
 ---
 

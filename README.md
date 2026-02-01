@@ -241,11 +241,20 @@ hotel-management-app/
    - Manage user accounts
    - View and moderate reviews
    - Check booking data
+   - Booking and review documents display meaningful preview titles (guest name, room name, dates/ratings)
 
-2. **Adding New Rooms**
+2. **Booking Calendar**
+   - Access the "Booking Calendar" tool in Sanity Studio's top navigation
+   - View all bookings on a monthly calendar grid
+   - Check-in dates shown with green badges, check-out dates with orange badges
+   - Click a date to see booking details (guest name, email, room, party size)
+   - Check off completed check-ins and check-outs — calendar badges update to show only pending bookings
+
+3. **Adding New Rooms**
    - Open Sanity Studio
    - Create a new "Hotel Room" document
    - Fill in all required fields (name, description, price, images)
+   - Images support both external URLs and direct file uploads from your device (we recommend at least 5 images per room)
    - Optionally fill Vietnamese fields (`name_vi`, `description_vi`, `specialNote_vi`, `price_vnd`) for multi-language support
    - Add amenities and configure room type
    - Set quantity available
