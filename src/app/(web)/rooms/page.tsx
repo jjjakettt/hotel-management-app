@@ -47,7 +47,8 @@ const Rooms = () => {
         //   Apply search query filter
         if (
             searchQuery &&
-            !room.name.toLowerCase().includes(searchQuery.toLowerCase())
+            !room.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+            !(room.name_vi && room.name_vi.toLowerCase().includes(searchQuery.toLowerCase()))
         ) {
             return false;
         }

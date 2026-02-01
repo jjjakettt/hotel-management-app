@@ -1,5 +1,6 @@
 import { Dispatch, FC, SetStateAction, useState } from 'react';
 import { BsStarFill } from 'react-icons/bs';
+import { useTranslation } from '@/libs/translations';
 
 type Props = {
     isOpen: boolean;
@@ -24,6 +25,7 @@ const RatingModal: FC<Props> = props => {
             toggleRatingModal,
     } = props;
 
+    const { t } = useTranslation();
     const starValues = [1, 2, 3, 4, 5];
     const [hoveredStar, setHoveredStar] = useState<number | null>(null);
 
@@ -37,14 +39,13 @@ const RatingModal: FC<Props> = props => {
         >
         <div className='bg-white w-96 p-4 rounded-lg shadow-lg'>
             <h2 className='text-xl dark:text-gray-800 font-semibold mb-2'>
-            Rate Your Experience
+            {t("rating.title")}
             </h2>
             <div className='mb-4'>
             <label className='block text-sm font-medium text-gray-700'>
-                Rating
+                {t("rating.rating")}
             </label>
             <div className='flex items-center'>
-                {/* Hovering Effect and Select Rating */}
                 {starValues.map(value => (
                     <button
                         className={`w-6 h-6 ${
@@ -68,7 +69,7 @@ const RatingModal: FC<Props> = props => {
 
             <div className='mb-4'>
             <label className='block text-sm font-medium text-gray-700'>
-                Review Text
+                {t("rating.reviewText")}
             </label>
 
             <textarea
@@ -81,17 +82,17 @@ const RatingModal: FC<Props> = props => {
 
             <div className='flex justify-end'>
             <button
-                onClick={reviewSubmitHandler}  
+                onClick={reviewSubmitHandler}
                 className='px-4 py-2 bg-primary text-white rounded-md'
                 disabled={isSubmittingReview}
             >
-                {isSubmittingReview ? 'Submitting' : 'Submit'}
+                {isSubmittingReview ? t("rating.submitting") : t("rating.submit")}
             </button>
             <button
                 onClick={toggleRatingModal}
                 className='ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400'
             >
-                Cancel
+                {t("rating.cancel")}
             </button>
             </div>
         </div>

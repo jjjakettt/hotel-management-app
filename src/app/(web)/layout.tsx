@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer"
 import ThemeProvider from "@/components/ThemeProvider/ThemeProvider";
+import LanguageProvider from "@/components/LanguageProvider/LanguageProvider";
 import { NextAuthProvider } from "@/components/AuthProvider/AuthProvider";
 import Toast from "@/components/Toast/Toast";
 
@@ -37,12 +38,14 @@ export default function RootLayout({
       <body suppressHydrationWarning className={`${montserrat.className} antialiased`}>
         <NextAuthProvider>
           <ThemeProvider>
-            <Toast />
-            <main className="font-normal">
-              <Header />
-              {children}
-              <Footer /> 
-            </main>
+            <LanguageProvider>
+              <Toast />
+              <main className="font-normal">
+                <Header />
+                {children}
+                <Footer />
+              </main>
+            </LanguageProvider>
           </ThemeProvider>
         </NextAuthProvider>
       </body>

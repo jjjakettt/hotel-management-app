@@ -3,10 +3,12 @@ import { groq } from "next-sanity";
 export const getFeaturedRoomQuery = groq`*[_type == "hotelRoom" && isFeatured == true][0] {
     _id,
     description,
+    description_vi,
     discount,
     images,
     isFeatured,
     name,
+    name_vi,
     price,
     quantity,
     slug,
@@ -17,10 +19,12 @@ export const getRoomsQuery = groq`*[_type == "hotelRoom"] {
     _id,
     coverImage,
     description,
+    description_vi,
     dimension,
     isBooked,
     isFeatured,
     name,
+    name_vi,
     price,
     quantity,
     slug,
@@ -31,11 +35,13 @@ export const getRoom = groq`*[_type == "hotelRoom" && slug.current == $slug][0] 
     _id,
     coverImage,
     description,
+    description_vi,
     dimension,
     images,
     isBooked,
     isFeatured,
     name,
+    name_vi,
     numberOfBeds,
     offeredAmenities,
     price,
@@ -43,14 +49,16 @@ export const getRoom = groq`*[_type == "hotelRoom" && slug.current == $slug][0] 
     quantity,
     slug,
     specialNote,
+    specialNote_vi,
     type
-}` 
+}`;
 
 export const getUserBookingsQuery = groq`*[_type == 'booking' && user._ref == $userId] {
     _id,
     hotelRoom -> {
         _id,
         name,
+        name_vi,
         slug,
         price
     },
@@ -82,16 +90,18 @@ export const getRoomReviewsQuery = groq`*[_type == 'review' && hotelRoom._ref ==
         name
     },
     userRating
-}`
+}`;
 
 export const getAvailableRoomsQuery = groq`*[_type == "hotelRoom" && !(_id in *[_type == "booking" && checkinDate <= $checkinDate && checkoutDate > $checkinDate].hotelRoom._ref)] {
     _id,
     coverImage,
     description,
+    description_vi,
     dimension,
     isBooked,
     isFeatured,
     name,
+    name_vi,
     price,
     slug,
     type
