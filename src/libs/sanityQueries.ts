@@ -10,6 +10,7 @@ export const getFeaturedRoomQuery = groq`*[_type == "hotelRoom" && isFeatured ==
     name,
     name_vi,
     price,
+    price_vnd,
     quantity,
     slug,
     coverImage
@@ -26,6 +27,7 @@ export const getRoomsQuery = groq`*[_type == "hotelRoom"] {
     name,
     name_vi,
     price,
+    price_vnd,
     quantity,
     slug,
     type
@@ -45,6 +47,7 @@ export const getRoom = groq`*[_type == "hotelRoom" && slug.current == $slug][0] 
     numberOfBeds,
     offeredAmenities,
     price,
+    price_vnd,
     discount,
     quantity,
     slug,
@@ -103,6 +106,7 @@ export const getAvailableRoomsQuery = groq`*[_type == "hotelRoom" && !(_id in *[
     name,
     name_vi,
     price,
+    price_vnd,
     slug,
     type
 }`;

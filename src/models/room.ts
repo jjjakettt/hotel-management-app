@@ -37,6 +37,7 @@ export type Room = {
     quantity: number;
     offeredAmenities: Amenity[];
     price: number;
+    price_vnd?: number;
     slug: Slug;
     specialNote: string;
     specialNote_vi?: string;

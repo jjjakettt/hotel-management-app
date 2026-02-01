@@ -51,6 +51,7 @@ const translations: Record<Language, Record<string, string>> = {
         "booking.bookNow": "Book Now",
         "booking.discount": "discount",
         "booking.now": "Now",
+        "booking.perNight": "per night",
 
         // Newsletter
         "newsletter.explore": "Explore More About Our Hotel",
@@ -174,6 +175,7 @@ const translations: Record<Language, Record<string, string>> = {
         "booking.bookNow": "\u0110\u1EB7t ngay",
         "booking.discount": "gi\u1EA3m gi\u00E1",
         "booking.now": "C\u00F2n",
+        "booking.perNight": "m\u1ED7i \u0111\u00EAm",
 
         // Newsletter
         "newsletter.explore": "Kh\u00E1m Ph\u00E1 Th\u00EAm V\u1EC1 Kh\u00E1ch S\u1EA1n",

@@ -225,6 +225,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                         <BookRoomCta
                             discount={room.discount}
                             price={room.price}
+                            price_vnd={room.price_vnd}
                             specialNote={displaySpecialNote}
                             checkinDate={checkinDate}
                             setCheckinDate={setCheckinDate}
