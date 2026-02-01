@@ -21,6 +21,13 @@ const hotelRoom = {
         }),
 
         defineField({
+            name: 'name_vi',
+            title: 'Name (Vietnamese)',
+            type: 'string',
+            validation: Rule => Rule.max(50).error("Maximum 50 Characters."),
+        }),
+
+        defineField({
             name: 'slug',
             type: 'slug',
             options: {
@@ -33,6 +40,11 @@ const hotelRoom = {
             title: 'Description',
             type: 'text',
             validation: Rule => Rule.required().min(10).error("Please Input Atleast 10 Characters."),
+        }),
+        defineField({
+            name: 'description_vi',
+            title: 'Description (Vietnamese)',
+            type: 'text',
         }),
         defineField({
             name: 'price',
@@ -91,6 +103,11 @@ const hotelRoom = {
             initialValue: 'Check-time is 12:00 PM, checkout time is 11:59 AM. If you leave behind any items, please contact the receptionist.',
         }),
         defineField({
+            name: 'specialNote_vi',
+            title: 'Special Note (Vietnamese)',
+            type: 'text',
+        }),
+        defineField({
             name: 'dimension',
             title: 'Dimension',
             type: 'string',
@@ -120,6 +137,7 @@ const hotelRoom = {
                 fields: [
                     { name: 'icon', title: 'Icon', type: 'string' },
                     { name: 'amenity', title: 'Amenity', type: 'string' },
+                    { name: 'amenity_vi', title: 'Amenity (Vietnamese)', type: 'string' },
                 ]
                 }
             ],

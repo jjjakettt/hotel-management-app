@@ -3,6 +3,7 @@ export type Booking = {
     hotelRoom: {
         _id: string;
         name: string;
+        name_vi?: string;
         slug: { current: string };
         price: number;
     };
