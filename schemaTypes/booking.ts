@@ -92,7 +92,19 @@ const booking = {
             title: 'Total Price',
             type: 'number',
             validation: Rule => Rule.required().min(0),
-        }), 
+        }),
+        defineField({
+            name: 'checkedIn',
+            title: 'Checked In',
+            type: 'boolean',
+            initialValue: false,
+        }),
+        defineField({
+            name: 'checkedOut',
+            title: 'Checked Out',
+            type: 'boolean',
+            initialValue: false,
+        }),
     ],
 };
 
