@@ -53,6 +53,13 @@ const hotelRoom = {
             validation: Rule => Rule.required(),
         }),
         defineField({
+            name: 'price_vnd',
+            title: 'Price (VND)',
+            type: 'number',
+            description: 'Price in Vietnamese Dong',
+            validation: Rule => Rule.min(0),
+        }),
+        defineField({
             name: 'discount',
             title: 'Discount',
             type: 'number',
