@@ -154,7 +154,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                                 {displayName} ({room.dimension})
                             </h2>
                             <div className="flex my-11">
-                                {room.offeredAmenities.map(ammenity => (
+                                {(room.offeredAmenities ?? []).map(ammenity => (
                                     <div
                                         key={ammenity._key}
                                         className="md:w-44 w-fit text-center px-2 md:px-0 h-20 md:h-40 mr-3 bg-[var(--background-secondary)] rounded-lg grid place-content-center"
@@ -175,7 +175,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                             <div className='mb-11'>
                                 <h2 className='font-bold text-3xl mb-2'>{t("room.offeredAmenities")}</h2>
                                 <div className='grid grid-cols-2'>
-                                {room.offeredAmenities.map(amenity => (
+                                {(room.offeredAmenities ?? []).map(amenity => (
                                     <div
                                     key={amenity._key}
                                     className='flex items-center md:my-0 my-1'
