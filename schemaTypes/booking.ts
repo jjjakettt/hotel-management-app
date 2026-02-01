@@ -4,6 +4,27 @@ const booking = {
     name: 'booking',
     title: 'Booking',
     type: 'document',
+    preview: {
+        select: {
+            userName: 'user.name',
+            roomName: 'hotelRoom.name',
+            checkinDate: 'checkinDate',
+            checkoutDate: 'checkoutDate',
+        },
+        prepare({ userName, roomName, checkinDate, checkoutDate }: {
+            userName?: string;
+            roomName?: string;
+            checkinDate?: string;
+            checkoutDate?: string;
+        }) {
+            const checkin = checkinDate ? new Date(checkinDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+            const checkout = checkoutDate ? new Date(checkoutDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+            const dateRange = checkin && checkout ? ` (${checkin} - ${checkout})` : '';
+            return {
+                title: `${userName || 'Unknown'} - ${roomName || 'Unknown'}${dateRange}`,
+            };
+        },
+    },
     fields: [
         defineField({
             name: 'user',
