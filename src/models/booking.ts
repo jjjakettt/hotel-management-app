@@ -5,7 +5,8 @@ export type Booking = {
         name: string;
         name_vi?: string;
         slug: { current: string };
-        price: number;
+        price_usd: number;
+        price_vnd?: number;
     };
     checkinDate: string;
     checkoutDate: string;

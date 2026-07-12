@@ -318,7 +318,7 @@ Retrieves the current authenticated user's profile data including bookings and r
         "_id": "room-1",
         "name": "Deluxe Suite",
         "slug": "deluxe-suite",
-        "price": 200
+        "price_usd": 200
       },
       "checkinDate": "2025-12-01",
       "checkoutDate": "2025-12-05",
@@ -637,7 +637,7 @@ interface Room {
   slug: string;
   description: string;
   description_vi?: string;   // Vietnamese description
-  price: number;
+  price_usd: number;
   price_vnd?: number;        // Price in Vietnamese Dong
   discount: number;
   quantity: number; // Total available rooms

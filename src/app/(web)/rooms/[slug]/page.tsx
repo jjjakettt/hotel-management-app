@@ -103,7 +103,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
             return toast.error(t("toast.invalidDates"));
 
         const numberOfDays = calcNumDays();
-        const discountPrice = room.price - (room.price / 100) * room.discount;
+        const discountPrice = room.price_usd - (room.price_usd / 100) * room.discount;
         const totalPrice = discountPrice * numberOfDays * selectedQuantity;
 
         try {
@@ -224,7 +224,7 @@ const RoomDetails = (props: { params: Promise<{ slug: string }> }) => {
                     <div className="md:col-span-4 rounded-xl shadow-[0_4px_6px_var(--shadow-color)] sticky top-10 h-fit overflow-auto">
                         <BookRoomCta
                             discount={room.discount}
-                            price={room.price}
+                            price_usd={room.price_usd}
                             price_vnd={room.price_vnd}
                             specialNote={displaySpecialNote}
                             checkinDate={checkinDate}
