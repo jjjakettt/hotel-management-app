@@ -381,7 +381,7 @@ GROQ is Sanity's query language. Examples:
   name,
   slug,
   description,
-  price,
+  price_usd,
   coverImage
 }
 ```
@@ -396,7 +396,7 @@ GROQ is Sanity's query language. Examples:
     _id,
     name,
     slug,
-    price
+    price_usd
   }
 }
 ```

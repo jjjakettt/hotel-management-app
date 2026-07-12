@@ -47,8 +47,8 @@ const hotelRoom = {
             type: 'text',
         }),
         defineField({
-            name: 'price',
-            title: 'Price',
+            name: 'price_usd',
+            title: 'Price (USD)',
             type: 'number',
             validation: Rule => Rule.required(),
         }),

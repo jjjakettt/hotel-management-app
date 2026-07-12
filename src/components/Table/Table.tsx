@@ -31,8 +31,17 @@ const Table: FC<Props> = ({ bookingDetails, setRoomId, toggleRatingModal }) => {
             </tr>
             </thead>
             <tbody>
-            {bookingDetails.map(booking => (
+            {bookingDetails.map(booking => {
+                const useVnd = language === "vi" && !!booking.hotelRoom.price_vnd;
+                const sym = useVnd ? "₫" : "$";
+                const unitPrice = useVnd ? booking.hotelRoom.price_vnd! : booking.hotelRoom.price_usd;
+                const discountedUnit = unitPrice - (unitPrice / 100) * booking.discount;
+                const totalPrice = useVnd
+                    ? discountedUnit * booking.numberOfDays * booking.quantity
+                    : booking.totalPrice;
+                const fmt = (n: number) => useVnd ? n.toLocaleString() : String(n);
 
+                return (
                 <tr key={booking._id} className='bg-white border-b hover:bg-gray-50'>
                     <th onClick= {() =>
                             router.push(`/rooms/${booking.hotelRoom.slug.current}`)
@@ -40,9 +49,9 @@ const Table: FC<Props> = ({ bookingDetails, setRoomId, toggleRatingModal }) => {
                         className='px-6 underline text-blue-600 cursor-pointer py-4 font-medium whitespace-nowrap'>
                         {(language === "vi" && booking.hotelRoom.name_vi) ? booking.hotelRoom.name_vi : booking.hotelRoom.name}
                     </th>
-                    <td className='px-6 py-4'>{booking.hotelRoom.price}</td>
-                    <td className='px-6 py-4'>{booking.totalPrice}</td>
-                    <td className='px-6 py-4'>{booking.discount}</td>
+                    <td className='px-6 py-4'>{sym}{fmt(unitPrice)}</td>
+                    <td className='px-6 py-4'>{sym}{fmt(totalPrice)}</td>
+                    <td className='px-6 py-4'>{booking.discount}%</td>
                     <td className='px-6 py-4'>{booking.numberOfDays}</td>
                     <td className='px-6 py-4'>{booking.quantity}</td>
                     <td className='px-6 py-4'>
@@ -57,7 +66,8 @@ const Table: FC<Props> = ({ bookingDetails, setRoomId, toggleRatingModal }) => {
                     </button>
                 </td>
                 </tr>
-            ))}
+                );
+            })}
 
             </tbody>
         </table>

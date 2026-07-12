@@ -51,7 +51,7 @@ const FeaturedRoom: FC<Props> = props => {
               <div className="flex gap-3 flex-col items-center justify-center mr-4">
                 <p className="text-xs lg:text-xl text-center">{t("featured.startFrom")}</p>
                 <p className={`md:font-bold flex font-medium text-lg ${(language === "vi" && featuredRoom.price_vnd) ? 'xl:text-3xl' : 'xl:text-5xl'}`}>
-                  {(language === "vi" && featuredRoom.price_vnd) ? `₫${featuredRoom.price_vnd.toLocaleString()}` : `$${featuredRoom.price}`}
+                  {(language === "vi" && featuredRoom.price_vnd) ? `₫${featuredRoom.price_vnd.toLocaleString()}` : `$${featuredRoom.price_usd}`}
                 </p>
               </div>
               {featuredRoom.discount > 0 && (

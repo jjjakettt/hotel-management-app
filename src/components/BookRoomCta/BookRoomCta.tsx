@@ -14,7 +14,7 @@ type Props = {
     setNoOfChildren: Dispatch<SetStateAction<number>>;
     handleBookNowClick: () => void;
     setSelectedQuantity: Dispatch<SetStateAction<number>>;
-    price: number;
+    price_usd: number;
     price_vnd?: number;
     discount: number;
     isBooked: boolean;
@@ -41,7 +41,7 @@ const BookRoomCta: FC<Props> = props => {
         setNoOfChildren,
         handleBookNowClick,
         setSelectedQuantity,
-        price,
+        price_usd,
         price_vnd,
         discount,
         specialNote,
@@ -55,7 +55,7 @@ const BookRoomCta: FC<Props> = props => {
     } = props;
 
     const useVnd = language === "vi" && !!price_vnd;
-    const displayPrice = useVnd ? price_vnd! : price;
+    const displayPrice = useVnd ? price_vnd! : price_usd;
     const sym = useVnd ? "₫" : "$";
     const fmt = (n: number) => useVnd ? n.toLocaleString() : String(n);
     const discountPrice = displayPrice - (displayPrice / 100) * discount;
